@@ -10,6 +10,7 @@ package com.microsoft.azure.management.sql.v2017_03_01_preview.implementation;
 
 import com.microsoft.azure.management.sql.v2017_03_01_preview.SecurityAlertPolicyState;
 import java.util.List;
+import org.joda.time.DateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.microsoft.rest.serializer.JsonFlatten;
 import com.microsoft.azure.ProxyResource;
@@ -66,6 +67,12 @@ public class ServerSecurityAlertPolicyInner extends ProxyResource {
      */
     @JsonProperty(value = "properties.retentionDays")
     private Integer retentionDays;
+
+    /**
+     * Specifies the UTC creation time of the policy.
+     */
+    @JsonProperty(value = "properties.creationTime", access = JsonProperty.Access.WRITE_ONLY)
+    private DateTime creationTime;
 
     /**
      * Get specifies the state of the policy, whether it is enabled or disabled. Possible values include: 'New', 'Enabled', 'Disabled'.
@@ -205,6 +212,15 @@ public class ServerSecurityAlertPolicyInner extends ProxyResource {
     public ServerSecurityAlertPolicyInner withRetentionDays(Integer retentionDays) {
         this.retentionDays = retentionDays;
         return this;
+    }
+
+    /**
+     * Get specifies the UTC creation time of the policy.
+     *
+     * @return the creationTime value
+     */
+    public DateTime creationTime() {
+        return this.creationTime;
     }
 
 }

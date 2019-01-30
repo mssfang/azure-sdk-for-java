@@ -38,10 +38,14 @@ import com.microsoft.azure.management.sql.v2017_03_01_preview.LongTermRetentionB
 import com.microsoft.azure.management.sql.v2017_03_01_preview.BackupLongTermRetentionPolicies;
 import com.microsoft.azure.management.sql.v2017_03_01_preview.ManagedBackupShortTermRetentionPolicies;
 import com.microsoft.azure.management.sql.v2017_03_01_preview.ManagedDatabases;
+import com.microsoft.azure.management.sql.v2017_03_01_preview.ManagedRestorableDroppedDatabaseBackupShortTermRetentionPolicies;
+import com.microsoft.azure.management.sql.v2017_03_01_preview.RestorableDroppedManagedDatabases;
 import com.microsoft.azure.management.sql.v2017_03_01_preview.RestorePoints;
 import com.microsoft.azure.management.sql.v2017_03_01_preview.ServerAutomaticTunings;
 import com.microsoft.azure.management.sql.v2017_03_01_preview.ServerDnsAliases;
 import com.microsoft.azure.management.sql.v2017_03_01_preview.ServerSecurityAlertPolicies;
+import com.microsoft.azure.management.sql.v2017_03_01_preview.ManagedDatabaseSecurityAlertPolicies;
+import com.microsoft.azure.management.sql.v2017_03_01_preview.ManagedServerSecurityAlertPolicies;
 import com.microsoft.azure.arm.resources.implementation.AzureConfigurableCoreImpl;
 import com.microsoft.azure.arm.resources.implementation.ManagerCore;
 
@@ -71,10 +75,14 @@ public final class SqlManager extends ManagerCore<SqlManager, SqlManagementClien
     private BackupLongTermRetentionPolicies backupLongTermRetentionPolicies;
     private ManagedBackupShortTermRetentionPolicies managedBackupShortTermRetentionPolicies;
     private ManagedDatabases managedDatabases;
+    private ManagedRestorableDroppedDatabaseBackupShortTermRetentionPolicies managedRestorableDroppedDatabaseBackupShortTermRetentionPolicies;
+    private RestorableDroppedManagedDatabases restorableDroppedManagedDatabases;
     private RestorePoints restorePoints;
     private ServerAutomaticTunings serverAutomaticTunings;
     private ServerDnsAliases serverDnsAliases;
     private ServerSecurityAlertPolicies serverSecurityAlertPolicies;
+    private ManagedDatabaseSecurityAlertPolicies managedDatabaseSecurityAlertPolicies;
+    private ManagedServerSecurityAlertPolicies managedServerSecurityAlertPolicies;
     /**
     * Get a Configurable instance that can be used to create SqlManager with optional configuration.
     *
@@ -343,6 +351,26 @@ public final class SqlManager extends ManagerCore<SqlManager, SqlManagementClien
     }
 
     /**
+     * @return Entry point to manage ManagedRestorableDroppedDatabaseBackupShortTermRetentionPolicies.
+     */
+    public ManagedRestorableDroppedDatabaseBackupShortTermRetentionPolicies managedRestorableDroppedDatabaseBackupShortTermRetentionPolicies() {
+        if (this.managedRestorableDroppedDatabaseBackupShortTermRetentionPolicies == null) {
+            this.managedRestorableDroppedDatabaseBackupShortTermRetentionPolicies = new ManagedRestorableDroppedDatabaseBackupShortTermRetentionPoliciesImpl(this);
+        }
+        return this.managedRestorableDroppedDatabaseBackupShortTermRetentionPolicies;
+    }
+
+    /**
+     * @return Entry point to manage RestorableDroppedManagedDatabases.
+     */
+    public RestorableDroppedManagedDatabases restorableDroppedManagedDatabases() {
+        if (this.restorableDroppedManagedDatabases == null) {
+            this.restorableDroppedManagedDatabases = new RestorableDroppedManagedDatabasesImpl(this);
+        }
+        return this.restorableDroppedManagedDatabases;
+    }
+
+    /**
      * @return Entry point to manage RestorePoints.
      */
     public RestorePoints restorePoints() {
@@ -380,6 +408,26 @@ public final class SqlManager extends ManagerCore<SqlManager, SqlManagementClien
             this.serverSecurityAlertPolicies = new ServerSecurityAlertPoliciesImpl(this);
         }
         return this.serverSecurityAlertPolicies;
+    }
+
+    /**
+     * @return Entry point to manage ManagedDatabaseSecurityAlertPolicies.
+     */
+    public ManagedDatabaseSecurityAlertPolicies managedDatabaseSecurityAlertPolicies() {
+        if (this.managedDatabaseSecurityAlertPolicies == null) {
+            this.managedDatabaseSecurityAlertPolicies = new ManagedDatabaseSecurityAlertPoliciesImpl(this);
+        }
+        return this.managedDatabaseSecurityAlertPolicies;
+    }
+
+    /**
+     * @return Entry point to manage ManagedServerSecurityAlertPolicies.
+     */
+    public ManagedServerSecurityAlertPolicies managedServerSecurityAlertPolicies() {
+        if (this.managedServerSecurityAlertPolicies == null) {
+            this.managedServerSecurityAlertPolicies = new ManagedServerSecurityAlertPoliciesImpl(this);
+        }
+        return this.managedServerSecurityAlertPolicies;
     }
 
     /**

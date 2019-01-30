@@ -18,11 +18,17 @@ import com.microsoft.azure.arm.model.Creatable;
 import com.microsoft.azure.arm.resources.models.HasManager;
 import com.microsoft.azure.management.sql.v2017_03_01_preview.implementation.SqlManager;
 import java.util.List;
+import org.joda.time.DateTime;
 
 /**
  * Type representing ServerSecurityAlertPolicy.
  */
 public interface ServerSecurityAlertPolicy extends HasInner<ServerSecurityAlertPolicyInner>, Indexable, Refreshable<ServerSecurityAlertPolicy>, Updatable<ServerSecurityAlertPolicy.Update>, HasManager<SqlManager> {
+    /**
+     * @return the creationTime value.
+     */
+    DateTime creationTime();
+
     /**
      * @return the disabledAlerts value.
      */
