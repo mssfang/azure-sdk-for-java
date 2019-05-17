@@ -26,8 +26,6 @@ import java.time.Duration;
  */
 abstract class PollStrategy {
 
-
-
     private final RestProxy restProxy;
     private final SwaggerMethodParser methodParser;
 
@@ -42,7 +40,7 @@ abstract class PollStrategy {
 
     abstract static class PollStrategyData implements Serializable {
 
-        /**Serial version id for this class*/
+        /*Serial version id for this class*/
         private static final long serialVersionUID = 1L;
 
         transient RestProxy restProxy;
