@@ -43,8 +43,8 @@ public final class InnerError {
     /*
      * Inner error contains more specific information.
      */
-    @JsonProperty(value = "innererror")
-    private InnerError innererror;
+    @JsonProperty(value = "innerError")
+    private InnerError innerError;
 
     /**
      * Get the code property: Error code. Possible values include:
@@ -133,24 +133,24 @@ public final class InnerError {
     }
 
     /**
-     * Get the innererror property: Inner error contains more specific
+     * Get the innerError property: Inner error contains more specific
      * information.
      *
-     * @return the innererror value.
+     * @return the innerError value.
      */
-    public InnerError getInnererror() {
-        return this.innererror;
+    public InnerError getInnerError() {
+        return this.innerError;
     }
 
     /**
-     * Set the innererror property: Inner error contains more specific
+     * Set the innerError property: Inner error contains more specific
      * information.
      *
-     * @param innererror the innererror value to set.
+     * @param innerError the innerError value to set.
      * @return the InnerError object itself.
      */
-    public InnerError setInnererror(InnerError innererror) {
-        this.innererror = innererror;
+    public InnerError setInnerError(InnerError innerError) {
+        this.innerError = innerError;
         return this;
     }
 }

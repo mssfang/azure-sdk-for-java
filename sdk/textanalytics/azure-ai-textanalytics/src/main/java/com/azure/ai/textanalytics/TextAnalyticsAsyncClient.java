@@ -1330,13 +1330,13 @@ public final class TextAnalyticsAsyncClient {
         }
         return detailsList;
     }
-
+    
     /**
      * Get default country hint code.
      *
      * @return the default country hint code
      */
-    String getDefaultCountryHint() {
+    public String getDefaultCountryHint() {
         return defaultCountryHint;
     }
 
@@ -1345,7 +1345,7 @@ public final class TextAnalyticsAsyncClient {
      *
      * @return the default language
      */
-    String getDefaultLanguage() {
+    public String getDefaultLanguage() {
         return defaultLanguage;
     }
 }
