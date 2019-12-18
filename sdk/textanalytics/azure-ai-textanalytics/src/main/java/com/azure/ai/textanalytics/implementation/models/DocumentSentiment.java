@@ -34,7 +34,8 @@ public final class DocumentSentiment {
     private DocumentStatistics statistics;
 
     /*
-     * The documentScores property.
+     * Document level sentiment confidence scores between 0 and 1 for each
+     * sentiment class.
      */
     @JsonProperty(value = "documentScores", required = true)
     private SentimentConfidenceScorePerLabel documentScores;
@@ -110,7 +111,8 @@ public final class DocumentSentiment {
     }
 
     /**
-     * Get the documentScores property: The documentScores property.
+     * Get the documentScores property: Document level sentiment confidence
+     * scores between 0 and 1 for each sentiment class.
      *
      * @return the documentScores value.
      */
@@ -119,7 +121,8 @@ public final class DocumentSentiment {
     }
 
     /**
-     * Set the documentScores property: The documentScores property.
+     * Set the documentScores property: Document level sentiment confidence
+     * scores between 0 and 1 for each sentiment class.
      *
      * @param documentScores the documentScores value to set.
      * @return the DocumentSentiment object itself.

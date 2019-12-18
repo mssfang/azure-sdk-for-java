@@ -21,7 +21,8 @@ public final class SentenceSentiment {
     private SentenceSentimentValue sentiment;
 
     /*
-     * The sentenceScores property.
+     * The sentiment confidence score between 0 and 1 for the sentence for all
+     * classes.
      */
     @JsonProperty(value = "sentenceScores", required = true)
     private SentimentConfidenceScorePerLabel sentenceScores;
@@ -67,7 +68,8 @@ public final class SentenceSentiment {
     }
 
     /**
-     * Get the sentenceScores property: The sentenceScores property.
+     * Get the sentenceScores property: The sentiment confidence score between
+     * 0 and 1 for the sentence for all classes.
      *
      * @return the sentenceScores value.
      */
@@ -76,7 +78,8 @@ public final class SentenceSentiment {
     }
 
     /**
-     * Set the sentenceScores property: The sentenceScores property.
+     * Set the sentenceScores property: The sentiment confidence score between
+     * 0 and 1 for the sentence for all classes.
      *
      * @param sentenceScores the sentenceScores value to set.
      * @return the SentenceSentiment object itself.

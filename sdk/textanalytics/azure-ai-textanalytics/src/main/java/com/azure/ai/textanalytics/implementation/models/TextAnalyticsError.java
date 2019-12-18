@@ -35,8 +35,8 @@ public final class TextAnalyticsError {
     /*
      * Inner error contains more specific information.
      */
-    @JsonProperty(value = "innererror")
-    private InnerError innererror;
+    @JsonProperty(value = "innerError")
+    private InnerError innerError;
 
     /*
      * Details about specific errors that led to this reported error.
@@ -109,24 +109,24 @@ public final class TextAnalyticsError {
     }
 
     /**
-     * Get the innererror property: Inner error contains more specific
+     * Get the innerError property: Inner error contains more specific
      * information.
      *
-     * @return the innererror value.
+     * @return the innerError value.
      */
-    public InnerError getInnererror() {
-        return this.innererror;
+    public InnerError getInnerError() {
+        return this.innerError;
     }
 
     /**
-     * Set the innererror property: Inner error contains more specific
+     * Set the innerError property: Inner error contains more specific
      * information.
      *
-     * @param innererror the innererror value to set.
+     * @param innerError the innerError value to set.
      * @return the TextAnalyticsError object itself.
      */
-    public TextAnalyticsError setInnererror(InnerError innererror) {
-        this.innererror = innererror;
+    public TextAnalyticsError setInnerError(InnerError innerError) {
+        this.innerError = innerError;
         return this;
     }
 
