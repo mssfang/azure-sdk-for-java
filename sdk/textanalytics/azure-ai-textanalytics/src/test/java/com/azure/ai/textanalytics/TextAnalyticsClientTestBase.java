@@ -212,25 +212,25 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
 
     // Key Phrases
     @Test
-    public abstract void recognizeKeyPhrasesForTextInput();
+    public abstract void extractKeyPhrasesForTextInput();
 
     @Test
-    public abstract void recognizeKeyPhrasesForEmptyText();
+    public abstract void extractKeyPhrasesForEmptyText();
 
     @Test
-    public abstract void recognizeKeyPhrasesForFaultyText();
+    public abstract void extractKeyPhrasesForFaultyText();
 
     @Test
-    public abstract void recognizeKeyPhrasesForBatchInput();
+    public abstract void extractKeyPhrasesForBatchInput();
 
     @Test
-    public abstract void recognizeKeyPhrasesForBatchInputShowStatistics();
+    public abstract void extractKeyPhrasesForBatchInputShowStatistics();
 
     @Test
-    public abstract void recognizeKeyPhrasesForBatchStringInput();
+    public abstract void extractKeyPhrasesForBatchStringInput();
 
     @Test
-    public abstract void recognizeKeyPhrasesForListLanguageHint();
+    public abstract void extractKeyPhrasesForListLanguageHint();
 
     // Sentiment
     @Test
