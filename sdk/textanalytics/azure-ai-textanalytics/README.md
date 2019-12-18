@@ -1,5 +1,5 @@
 # Azure Core Text Analytics client library for Java
-Text Analytics is a cloud-based service that provides advanced natural language processing over raw text, and includes four main functions:
+Text Analytics is a cloud-based service that provides advanced natural language processing over raw text, and includes four main functions
 
 - Sentiment Analysis
 - Named Entity Recognition
@@ -27,7 +27,7 @@ Text Analytics is a cloud-based service that provides advanced natural language 
 
 ### Default HTTP Client
 All client libraries, by default, use Netty HTTP client. Adding the above dependency will automatically configure 
-AppConfiguration to use Netty HTTP client. 
+Text Analytics to use Netty HTTP client. 
 
 [//]: # ({x-version-update-start;com.azure:azure-core-http-netty;current})
 ```xml
