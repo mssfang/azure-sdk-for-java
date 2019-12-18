@@ -18,11 +18,10 @@ public final class SentenceSentiment {
      * 'positive', 'neutral', 'negative'
      */
     @JsonProperty(value = "sentiment", required = true)
-    private String sentiment;
+    private SentenceSentimentValue sentiment;
 
     /*
-     * The sentiment confidence score between 0 and 1 for the sentence for all
-     * classes.
+     * The sentenceScores property.
      */
     @JsonProperty(value = "sentenceScores", required = true)
     private SentimentConfidenceScorePerLabel sentenceScores;
@@ -51,7 +50,7 @@ public final class SentenceSentiment {
      *
      * @return the sentiment value.
      */
-    public String getSentiment() {
+    public SentenceSentimentValue getSentiment() {
         return this.sentiment;
     }
 
@@ -62,14 +61,13 @@ public final class SentenceSentiment {
      * @param sentiment the sentiment value to set.
      * @return the SentenceSentiment object itself.
      */
-    public SentenceSentiment setSentiment(String sentiment) {
+    public SentenceSentiment setSentiment(SentenceSentimentValue sentiment) {
         this.sentiment = sentiment;
         return this;
     }
 
     /**
-     * Get the sentenceScores property: The sentiment confidence score between
-     * 0 and 1 for the sentence for all classes.
+     * Get the sentenceScores property: The sentenceScores property.
      *
      * @return the sentenceScores value.
      */
@@ -78,8 +76,7 @@ public final class SentenceSentiment {
     }
 
     /**
-     * Set the sentenceScores property: The sentiment confidence score between
-     * 0 and 1 for the sentence for all classes.
+     * Set the sentenceScores property: The sentenceScores property.
      *
      * @param sentenceScores the sentenceScores value to set.
      * @return the SentenceSentiment object itself.
