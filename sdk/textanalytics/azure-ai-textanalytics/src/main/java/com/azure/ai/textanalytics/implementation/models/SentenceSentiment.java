@@ -18,14 +18,13 @@ public final class SentenceSentiment {
      * 'positive', 'neutral', 'negative'
      */
     @JsonProperty(value = "sentiment", required = true)
-    private String sentiment;
+    private SentenceSentimentValue sentiment;
 
     /*
-     * The sentiment confidence score between 0 and 1 for the sentence for all
-     * classes.
+     * The sentenceScores property.
      */
     @JsonProperty(value = "sentenceScores", required = true)
-    private Object sentenceScores;
+    private SentimentConfidenceScorePerLabel sentenceScores;
 
     /*
      * The sentence offset from the start of the document.
@@ -51,7 +50,7 @@ public final class SentenceSentiment {
      *
      * @return the sentiment value.
      */
-    public String getSentiment() {
+    public SentenceSentimentValue getSentiment() {
         return this.sentiment;
     }
 
@@ -62,29 +61,27 @@ public final class SentenceSentiment {
      * @param sentiment the sentiment value to set.
      * @return the SentenceSentiment object itself.
      */
-    public SentenceSentiment setSentiment(String sentiment) {
+    public SentenceSentiment setSentiment(SentenceSentimentValue sentiment) {
         this.sentiment = sentiment;
         return this;
     }
 
     /**
-     * Get the sentenceScores property: The sentiment confidence score between
-     * 0 and 1 for the sentence for all classes.
+     * Get the sentenceScores property: The sentenceScores property.
      *
      * @return the sentenceScores value.
      */
-    public Object getSentenceScores() {
+    public SentimentConfidenceScorePerLabel getSentenceScores() {
         return this.sentenceScores;
     }
 
     /**
-     * Set the sentenceScores property: The sentiment confidence score between
-     * 0 and 1 for the sentence for all classes.
+     * Set the sentenceScores property: The sentenceScores property.
      *
      * @param sentenceScores the sentenceScores value to set.
      * @return the SentenceSentiment object itself.
      */
-    public SentenceSentiment setSentenceScores(Object sentenceScores) {
+    public SentenceSentiment setSentenceScores(SentimentConfidenceScorePerLabel sentenceScores) {
         this.sentenceScores = sentenceScores;
         return this;
     }
