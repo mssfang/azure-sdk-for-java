@@ -308,11 +308,7 @@ public final class TextAnalyticsAsyncClient {
             Arrays.asList(new TextDocumentInput(Integer.toString(0), text, language)), null, context)
             .flatMap(response -> {
                 Iterator<RecognizeEntitiesResult> responseItem = response.getValue().iterator();
-                if (responseItem.hasNext()) {
-                    return Mono.just(new SimpleResponse<>(response, responseItem.next()));
-                }
-                return monoError(logger,
-                    new RuntimeException("Unable to recognize entities for the provided text."));
+                return Mono.just(new SimpleResponse<>(response, responseItem.next()));
             });
     }
 
@@ -458,11 +454,7 @@ public final class TextAnalyticsAsyncClient {
             Arrays.asList(new TextDocumentInput(Integer.toString(0), text, language)), null, context)
             .flatMap(response -> {
                 Iterator<RecognizeEntitiesResult> responseItem = response.getValue().iterator();
-                if (responseItem.hasNext()) {
-                    return Mono.just(new SimpleResponse<>(response, responseItem.next()));
-                }
-                return monoError(logger,
-                    new RuntimeException("Unable to recognize PII entities for the provided text."));
+                return Mono.just(new SimpleResponse<>(response, responseItem.next()));
             });
     }
 
@@ -616,11 +608,7 @@ public final class TextAnalyticsAsyncClient {
             Arrays.asList(new TextDocumentInput(Integer.toString(0), text, language)), null, context)
             .flatMap(response -> {
                 Iterator<RecognizeLinkedEntitiesResult> responseItem = response.getValue().iterator();
-                if (responseItem.hasNext()) {
-                    return Mono.just(new SimpleResponse<>(response, responseItem.next()));
-                }
-                return monoError(logger,
-                    new RuntimeException("Unable to recognize linked entities for the provided text."));
+                return Mono.just(new SimpleResponse<>(response, responseItem.next()));
             });
     }
 
@@ -748,7 +736,6 @@ public final class TextAnalyticsAsyncClient {
     }
 
 
-
     // Key Phrases
 
     /**
@@ -793,11 +780,7 @@ public final class TextAnalyticsAsyncClient {
             Arrays.asList(new TextDocumentInput(Integer.toString(0), text, language)), null, context)
             .flatMap(response -> {
                 Iterator<ExtractKeyPhraseResult> responseItem = response.getValue().iterator();
-                if (responseItem.hasNext()) {
-                    return Mono.just(new SimpleResponse<>(response, responseItem.next()));
-                }
-                return monoError(logger,
-                    new RuntimeException("Unable to extract key phrases for the provided text."));
+                return Mono.just(new SimpleResponse<>(response, responseItem.next()));
             });
     }
 
@@ -907,14 +890,14 @@ public final class TextAnalyticsAsyncClient {
     private List<ExtractKeyPhraseResult> getKeyPhraseResults(
         final com.azure.ai.textanalytics.implementation.models.KeyPhraseResult keyPhraseResult) {
         List<ExtractKeyPhraseResult> validDocumentList = new ArrayList<>();
-        for(DocumentKeyPhrases documentKeyPhrases : keyPhraseResult.getDocuments()) {
+        for (DocumentKeyPhrases documentKeyPhrases : keyPhraseResult.getDocuments()) {
             validDocumentList.add(new ExtractKeyPhraseResult(documentKeyPhrases.getId(),
                 convertToTextDocumentStatistics(documentKeyPhrases.getStatistics()), null,
                 documentKeyPhrases.getKeyPhrases()));
         }
         List<ExtractKeyPhraseResult> errorDocumentList = new ArrayList<>();
 
-        for(DocumentError documentError : keyPhraseResult.getErrors()) {
+        for (DocumentError documentError : keyPhraseResult.getErrors()) {
             final Error serviceError = convertToError(documentError.getError());
             final Error error = new Error().setCode(serviceError.getCode()).setMessage(serviceError.getMessage())
                 .setTarget(serviceError.getTarget());
@@ -924,6 +907,7 @@ public final class TextAnalyticsAsyncClient {
     }
 
     // Sentiment
+
     /**
      * Returns a sentiment prediction, as well as sentiment scores for each sentiment class (Positive, Negative, and
      * Neutral) for the document and each sentence within i
@@ -1223,7 +1207,7 @@ public final class TextAnalyticsAsyncClient {
         }
         List<DetectLanguageResult> errorDocumentList = new ArrayList<>();
         for (DocumentError documentError : languageResult.getErrors()) {
-            Error serviceError =  convertToError(documentError.getError());
+            Error serviceError = convertToError(documentError.getError());
             Error error = new Error().setCode(serviceError.getCode()).setMessage(serviceError.getMessage())
                 .setTarget(serviceError.getTarget());
             errorDocumentList.add(new DetectLanguageResult(documentError.getId(), null, error, null,
@@ -1232,16 +1216,18 @@ public final class TextAnalyticsAsyncClient {
         return Stream.concat(validDocumentList.stream(), errorDocumentList.stream()).collect(Collectors.toList());
     }
 
-    private List<DetectedLanguage> convertToDetectLanguages(List<com.azure.ai.textanalytics.implementation.models.DetectedLanguage> detectedLanguages) {
+    private List<DetectedLanguage> convertToDetectLanguages(
+        List<com.azure.ai.textanalytics.implementation.models.DetectedLanguage> detectedLanguages) {
         List<DetectedLanguage> detectedLanguagesList = new ArrayList<>();
-        for(com.azure.ai.textanalytics.implementation.models.DetectedLanguage detectedLanguage : detectedLanguages) {
+        for (com.azure.ai.textanalytics.implementation.models.DetectedLanguage detectedLanguage : detectedLanguages) {
             detectedLanguagesList.add(new DetectedLanguage().setName(detectedLanguage.getName())
                 .setIso6391Name(detectedLanguage.getIso6391Name()).setScore(detectedLanguage.getScore()));
         }
-        return  detectedLanguagesList;
+        return detectedLanguagesList;
     }
 
-    private DetectedLanguage setPrimaryLanguage(List<com.azure.ai.textanalytics.implementation.models.DetectedLanguage> detectedLanguages) {
+    private DetectedLanguage setPrimaryLanguage(
+        List<com.azure.ai.textanalytics.implementation.models.DetectedLanguage> detectedLanguages) {
         if (detectedLanguages.size() > 1) {
             com.azure.ai.textanalytics.implementation.models.DetectedLanguage detectedLanguageResult = detectedLanguages.get(0);
             return new DetectedLanguage().setName(detectedLanguageResult.getName())
@@ -1260,7 +1246,7 @@ public final class TextAnalyticsAsyncClient {
     private DocumentResultCollection<RecognizeEntitiesResult> toDocumentResultCollection(
         final EntitiesResult entitiesResult) {
         return new DocumentResultCollection<>(getDocumentNamedEntities(entitiesResult),
-            entitiesResult.getModelVersion(), entitiesResult.getStatistics());
+            entitiesResult.getModelVersion(), mapBatchStatistics(entitiesResult.getStatistics()));
     }
 
     private List<RecognizeEntitiesResult> getDocumentNamedEntities(final EntitiesResult entitiesResult) {
@@ -1281,12 +1267,12 @@ public final class TextAnalyticsAsyncClient {
 
     private List<NamedEntity> mapToNamedEntities(List<Entity> entities) {
         List<NamedEntity> namedEntityList = new ArrayList<>();
-        for(Entity entity : entities) {
+        for (Entity entity : entities) {
             namedEntityList.add(new NamedEntity().setScore(entity.getScore()).setSubtype(entity.getSubtype())
                 .setType(entity.getType()).setLength(entity.getLength()).setOffset(entity.getOffset())
                 .setText(entity.getText()));
         }
-        return  namedEntityList;
+        return namedEntityList;
     }
 
     private static <T> List<T> mapByIndex(List<String> textInputs, BiFunction<String, String, T> mappingFunction) {
@@ -1320,7 +1306,7 @@ public final class TextAnalyticsAsyncClient {
     }
 
     private InnerError mapInnerError(com.azure.ai.textanalytics.implementation.models.InnerError innerError) {
-        return new InnerError().setCode(innerError.getCode().toString()).setInnererror(mapInnerError(innerError.getInnererror())).setMessage(innerError.getMessage()).setTarget(innerError.getTarget());
+        return new InnerError().setCode(innerError.getCode().toString()).setInnererror(mapInnerError(innerError.getInnerError())).setMessage(innerError.getMessage()).setTarget(innerError.getTarget());
     }
 
     private List<Error> setErrors(List<TextAnalyticsError> details) {
@@ -1330,7 +1316,7 @@ public final class TextAnalyticsAsyncClient {
         }
         return detailsList;
     }
-    
+
     /**
      * Get default country hint code.
      *
