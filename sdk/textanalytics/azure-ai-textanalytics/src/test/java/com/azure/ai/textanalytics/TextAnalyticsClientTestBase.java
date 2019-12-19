@@ -7,13 +7,13 @@ import com.azure.ai.textanalytics.models.DetectLanguageInput;
 import com.azure.ai.textanalytics.models.DetectLanguageResult;
 import com.azure.ai.textanalytics.models.DetectedLanguage;
 import com.azure.ai.textanalytics.models.DocumentResultCollection;
-import com.azure.ai.textanalytics.models.Error;
 import com.azure.ai.textanalytics.models.ExtractKeyPhraseResult;
 import com.azure.ai.textanalytics.models.LinkedEntity;
 import com.azure.ai.textanalytics.models.LinkedEntityMatch;
 import com.azure.ai.textanalytics.models.NamedEntity;
 import com.azure.ai.textanalytics.models.RecognizeEntitiesResult;
 import com.azure.ai.textanalytics.models.RecognizeLinkedEntitiesResult;
+import com.azure.ai.textanalytics.models.TextAnalyticsError;
 import com.azure.ai.textanalytics.models.TextAnalyticsRequestOptions;
 import com.azure.ai.textanalytics.models.TextDocumentBatchStatistics;
 import com.azure.ai.textanalytics.models.TextDocumentInput;
@@ -50,12 +50,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -504,12 +502,11 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
                 assertEquals(detectLanguageResults.size(), actualDetectLanguageResults.size());
 
                 actualDetectLanguageResults.forEach(actualItem -> {
-                    Stream<DetectLanguageResult> expectedItems = detectLanguageResults.stream().filter(
-                        expectedEachItem -> actualItem.getId().equals(expectedEachItem.getId()));
-                    assertEquals(expectedItems.count(), 1);
-                    Optional<DetectLanguageResult> optionalExpectedItem = expectedItems.findFirst();
-                    assertTrue(optionalExpectedItem.isPresent());
-                    DetectLanguageResult expectedItem = optionalExpectedItem.get();
+                    List<DetectLanguageResult> expectedItems = detectLanguageResults.stream().filter(
+                        expectedEachItem -> actualItem.getId().equals(expectedEachItem.getId()))
+                        .collect(Collectors.toList());
+                    assertEquals(expectedItems.size(), 1);
+                    DetectLanguageResult expectedItem = expectedItems.get(0);
                     if (actualItem.getError() == null) {
                         if (this.showStatistics) {
                             validateDocumentStatistics(expectedItem.getStatistics(), actualItem.getStatistics());
@@ -532,12 +529,12 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
                 assertEquals(recognizeEntitiesResults.size(), actualRecognizeEntitiesResults.size());
 
                 actualRecognizeEntitiesResults.forEach(actualItem -> {
-                    Stream<RecognizeEntitiesResult> expectedItems = recognizeEntitiesResults.stream().filter(
-                        expectedEachItem -> actualItem.getId().equals(expectedEachItem.getId()));
-                    assertEquals(expectedItems.count(), 1);
-                    Optional<RecognizeEntitiesResult> optionalExpectedItem = expectedItems.findFirst();
-                    assertTrue(optionalExpectedItem.isPresent());
-                    RecognizeEntitiesResult expectedItem = optionalExpectedItem.get();
+                    List<RecognizeEntitiesResult> expectedItems = recognizeEntitiesResults.stream().filter(
+                        expectedEachItem -> actualItem.getId().equals(expectedEachItem.getId())).collect(
+                            Collectors.toList()
+                    );
+                    assertEquals(expectedItems.size(), 1);
+                    RecognizeEntitiesResult expectedItem = expectedItems.get(0);
                     if (actualItem.getError() == null) {
                         if (this.showStatistics) {
                             validateDocumentStatistics(expectedItem.getStatistics(), actualItem.getStatistics());
@@ -559,12 +556,11 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
                 assertEquals(recognizeLinkedEntitiesResults.size(), actualRecognizeLinkedEntitiesResults.size());
 
                 actualRecognizeLinkedEntitiesResults.forEach(actualItem -> {
-                    Stream<RecognizeLinkedEntitiesResult> expectedItems = recognizeLinkedEntitiesResults.stream().filter(
-                        expectedEachItem -> actualItem.getId().equals(expectedEachItem.getId()));
-                    assertEquals(expectedItems.count(), 1);
-                    Optional<RecognizeLinkedEntitiesResult> optionalExpectedItem = expectedItems.findFirst();
-                    assertTrue(optionalExpectedItem.isPresent());
-                    RecognizeLinkedEntitiesResult expectedItem = optionalExpectedItem.get();
+                    List<RecognizeLinkedEntitiesResult> expectedItems = recognizeLinkedEntitiesResults.stream().filter(
+                        expectedEachItem -> actualItem.getId().equals(expectedEachItem.getId()))
+                        .collect(Collectors.toList());
+                    assertEquals(expectedItems.size(), 1);
+                    RecognizeLinkedEntitiesResult expectedItem = expectedItems.get(0);
                     if (actualItem.getError() == null) {
                         if (this.showStatistics) {
                             validateDocumentStatistics(expectedItem.getStatistics(), actualItem.getStatistics());
@@ -586,12 +582,11 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
                 assertEquals(extractKeyPhraseResults.size(), actualExtractKeyPhraseResults.size());
 
                 actualExtractKeyPhraseResults.forEach(actualItem -> {
-                    Stream<ExtractKeyPhraseResult> expectedItems = extractKeyPhraseResults.stream().filter(
-                        expectedEachItem -> actualItem.getId().equals(expectedEachItem.getId()));
-                    assertEquals(expectedItems.count(), 1);
-                    Optional<ExtractKeyPhraseResult> optionalExpectedItem = expectedItems.findFirst();
-                    assertTrue(optionalExpectedItem.isPresent());
-                    ExtractKeyPhraseResult expectedItem = optionalExpectedItem.get();
+                    List<ExtractKeyPhraseResult> expectedItems = extractKeyPhraseResults.stream().filter(
+                        expectedEachItem -> actualItem.getId().equals(expectedEachItem.getId()))
+                        .collect(Collectors.toList());
+                    assertEquals(expectedItems.size(), 1);
+                    ExtractKeyPhraseResult expectedItem = expectedItems.get(0);
                     if (actualItem.getError() == null) {
                         if (this.showStatistics) {
                             validateDocumentStatistics(expectedItem.getStatistics(), actualItem.getStatistics());
@@ -686,11 +681,10 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
 
     /**
      * Helper method to verify the error document.
-     *
-     * @param expectedError the Error returned from the service.
+     *  @param expectedError the Error returned from the service.
      * @param actualError the Error returned from the API.
      */
-    static void validateErrorDocument(Error expectedError, Error actualError) {
+    static void validateErrorDocument(TextAnalyticsError expectedError, TextAnalyticsError actualError) {
         assertEquals(expectedError.getCode(), actualError.getCode());
         assertEquals(expectedError.getMessage(), actualError.getMessage());
         assertEquals(expectedError.getTarget(), actualError.getTarget());
@@ -867,99 +861,90 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
      * Helper method to get the expected Batch Detected Languages
      */
     static DocumentResultCollection<DetectLanguageResult> getExpectedBatchDetectedLanguages() {
-        DetectedLanguage detectedLanguage1 = new DetectedLanguage().setName("English").setIso6391Name("en")
-            .setScore(1.0);
-        DetectedLanguage detectedLanguage2 = new DetectedLanguage().setName("Spanish").setIso6391Name("es")
-            .setScore(1.0);
-        DetectedLanguage detectedLanguage3 = new DetectedLanguage().setName("(Unknown)").setIso6391Name("(Unknown)")
-            .setScore(0.0);
+        DetectedLanguage detectedLanguage1 = new DetectedLanguage("English", "en", 1.0);
+        DetectedLanguage detectedLanguage2 = new DetectedLanguage("Spanish", "es", 1.0);
+        DetectedLanguage detectedLanguage3 = new DetectedLanguage("(Unknown)", "(Unknown)", 0.0);
         List<DetectedLanguage> detectedLanguageList1 = Collections.singletonList(detectedLanguage1);
         List<DetectedLanguage> detectedLanguageList2 = Collections.singletonList(detectedLanguage2);
         List<DetectedLanguage> detectedLanguageList3 = Collections.singletonList(detectedLanguage3);
 
-        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics().setCharacterCount(26).setTransactionCount(1);
-        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics().setCharacterCount(39).setTransactionCount(1);
-        TextDocumentStatistics textDocumentStatistics3 = new TextDocumentStatistics().setCharacterCount(6).setTransactionCount(1);
+        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics(26, 1);
+        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics(39, 1);
+        TextDocumentStatistics textDocumentStatistics3 = new TextDocumentStatistics(6, 1);
 
         DetectLanguageResult detectLanguageResult1 = new DetectLanguageResult("0", textDocumentStatistics1, null, detectedLanguage1, detectedLanguageList1);
         DetectLanguageResult detectLanguageResult2 = new DetectLanguageResult("1", textDocumentStatistics2, null, detectedLanguage2, detectedLanguageList2);
         DetectLanguageResult detectLanguageResult3 = new DetectLanguageResult("2", textDocumentStatistics3, null, detectedLanguage3, detectedLanguageList3);
 
-        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics().setDocumentCount(3).setErroneousDocumentCount(0).setTransactionCount(3).setValidDocumentCount(3);
+        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics(3, 0, 3, 3);
         List<DetectLanguageResult> detectLanguageResultList = Arrays.asList(detectLanguageResult1, detectLanguageResult2, detectLanguageResult3);
 
         return new DocumentResultCollection<>(detectLanguageResultList, MODEL_VERSION, textDocumentBatchStatistics);
     }
 
     static DocumentResultCollection<RecognizeEntitiesResult> getExpectedBatchNamedEntities() {
-        NamedEntity namedEntity1 = new NamedEntity().setText("Seattle").setType("Location").setOffset(26).setLength(7).setScore(0.80624294281005859);
-        NamedEntity namedEntity2 = new NamedEntity().setText("last week").setType("DateTime").setSubtype("DateRange").setOffset(34).setLength(9).setScore(0.8);
-        NamedEntity namedEntity3 = new NamedEntity().setText("Microsoft").setType("Organization").setOffset(10).setLength(9).setScore(0.99983596801757812);
+        NamedEntity namedEntity1 = new NamedEntity("Seattle", "Location", null, 26, 7, 0.80624294281005859);
+        NamedEntity namedEntity2 = new NamedEntity("last week", "DateTime", "DateRange", 34, 9, 0.8);
+        NamedEntity namedEntity3 = new NamedEntity("Microsoft", "Organization", null, 10, 9, 0.99983596801757812);
 
         List<NamedEntity> namedEntityList1 = Arrays.asList(namedEntity1, namedEntity2);
         List<NamedEntity> namedEntityList2 = Collections.singletonList(namedEntity3);
 
-        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics().setCharacterCount(44).setTransactionCount(1);
-        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics().setCharacterCount(20).setTransactionCount(1);
+        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics(44, 1);
+        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics(20, 1);
 
         RecognizeEntitiesResult recognizeEntitiesResult1 = new RecognizeEntitiesResult("0", textDocumentStatistics1, null, namedEntityList1);
         RecognizeEntitiesResult recognizeEntitiesResult2 = new RecognizeEntitiesResult("1", textDocumentStatistics2, null, namedEntityList2);
 
-        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics().setDocumentCount(2).setErroneousDocumentCount(0).setTransactionCount(2).setValidDocumentCount(2);
+        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics(2, 0, 2, 2);
         List<RecognizeEntitiesResult> recognizeEntitiesResultList = Arrays.asList(recognizeEntitiesResult1, recognizeEntitiesResult2);
 
         return new DocumentResultCollection<>(recognizeEntitiesResultList, MODEL_VERSION, textDocumentBatchStatistics);
     }
 
     static DocumentResultCollection<RecognizeEntitiesResult> getExpectedBatchPiiEntities() {
-        NamedEntity namedEntity1 = new NamedEntity().setText("859-98-0987").setType("U.S. Social Security Number (SSN)").setSubtype("").setOffset(28).setLength(11).setScore(0.65);
-        NamedEntity namedEntity2 = new NamedEntity().setText("111000025").setType("ABA Routing Number").setSubtype("").setOffset(18).setLength(9).setScore(0.75);
+        NamedEntity namedEntity1 = new NamedEntity("859-98-0987", "U.S. Social Security Number (SSN)", "", 28, 11, 0.65);
+        NamedEntity namedEntity2 = new NamedEntity("111000025", "ABA Routing Number", "", 18, 9, 0.75);
 
         List<NamedEntity> namedEntityList1 = Collections.singletonList(namedEntity1);
         List<NamedEntity> namedEntityList2 = Collections.singletonList(namedEntity2);
 
-        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics().setCharacterCount(67).setTransactionCount(1);
-        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics().setCharacterCount(105).setTransactionCount(1);
+        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics(67, 1);
+        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics(105, 1);
 
         RecognizeEntitiesResult recognizeEntitiesResult1 = new RecognizeEntitiesResult("0", textDocumentStatistics1, null, namedEntityList1);
         RecognizeEntitiesResult recognizeEntitiesResult2 = new RecognizeEntitiesResult("1", textDocumentStatistics2, null, namedEntityList2);
 
-        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics().setDocumentCount(2).setErroneousDocumentCount(0).setTransactionCount(2).setValidDocumentCount(2);
+        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics(2, 0, 2, 2);
         List<RecognizeEntitiesResult> recognizeEntitiesResultList = Arrays.asList(recognizeEntitiesResult1, recognizeEntitiesResult2);
 
         return new DocumentResultCollection<>(recognizeEntitiesResultList, MODEL_VERSION, textDocumentBatchStatistics);
     }
 
     static DocumentResultCollection<RecognizeLinkedEntitiesResult> getExpectedBatchLinkedEntities() {
-        LinkedEntityMatch linkedEntityMatch1 = new LinkedEntityMatch().setText("Seattle").setLength(7).setOffset(26).setScore(0.11472424095537814);
-        LinkedEntityMatch linkedEntityMatch2 = new LinkedEntityMatch().setText("Microsoft").setLength(9).setOffset(10).setScore(0.18693659716732069);
+        LinkedEntityMatch linkedEntityMatch1 = new LinkedEntityMatch("Seattle", 0.11472424095537814, 7, 26);
+        LinkedEntityMatch linkedEntityMatch2 = new LinkedEntityMatch("Microsoft", 0.18693659716732069, 9, 10);
 
-        LinkedEntity linkedEntity1 = new LinkedEntity()
-            .setId("Seattle")
-            .setName("Seattle")
-            .setLanguage("en")
-            .setUrl("https://en.wikipedia.org/wiki/Seattle")
-            .setDataSource("Wikipedia")
-            .setLinkedEntityMatches(Collections.singletonList(linkedEntityMatch1));
+        LinkedEntity linkedEntity1 = new LinkedEntity(
+            "Seattle", Collections.singletonList(linkedEntityMatch1),
+            "en", "Seattle", "https://en.wikipedia.org/wiki/Seattle",
+            "Wikipedia");
 
-        LinkedEntity linkedEntity2 = new LinkedEntity()
-            .setId("Microsoft")
-            .setName("Microsoft")
-            .setLanguage("en")
-            .setUrl("https://en.wikipedia.org/wiki/Microsoft")
-            .setDataSource("Wikipedia")
-            .setLinkedEntityMatches(Collections.singletonList(linkedEntityMatch2));
+        LinkedEntity linkedEntity2 = new LinkedEntity(
+            "Microsoft", Collections.singletonList(linkedEntityMatch2),
+            "en", "Microsoft", "https://en.wikipedia.org/wiki/Microsoft",
+            "Wikipedia");
 
         List<LinkedEntity> linkedEntityList1 = Collections.singletonList(linkedEntity1);
         List<LinkedEntity> linkedEntityList2 = Collections.singletonList(linkedEntity2);
 
-        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics().setCharacterCount(44).setTransactionCount(1);
-        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics().setCharacterCount(20).setTransactionCount(1);
+        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics(44, 1);
+        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics(20, 1);
 
         RecognizeLinkedEntitiesResult recognizeLinkedEntitiesResult1 = new RecognizeLinkedEntitiesResult("0", textDocumentStatistics1, null, linkedEntityList1);
         RecognizeLinkedEntitiesResult recognizeLinkedEntitiesResult2 = new RecognizeLinkedEntitiesResult("1", textDocumentStatistics2, null, linkedEntityList2);
 
-        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics().setDocumentCount(2).setErroneousDocumentCount(0).setTransactionCount(2).setValidDocumentCount(2);
+        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics(2, 0, 2, 2);
         List<RecognizeLinkedEntitiesResult> recognizeLinkedEntitiesResultList = Arrays.asList(recognizeLinkedEntitiesResult1, recognizeLinkedEntitiesResult2);
 
         return new DocumentResultCollection<>(recognizeLinkedEntitiesResultList, MODEL_VERSION, textDocumentBatchStatistics);
@@ -969,23 +954,21 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
         List<String> keyPhrasesList1 = Arrays.asList("input text", "world");
         List<String> keyPhrasesList2 = Arrays.asList("monde");
 
-        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics().setCharacterCount(49).setTransactionCount(1);
-        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics().setCharacterCount(21).setTransactionCount(1);
+        TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics(49, 1);
+        TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics(21, 1);
 
         ExtractKeyPhraseResult extractKeyPhraseResult1 = new ExtractKeyPhraseResult("0", textDocumentStatistics1, null, keyPhrasesList1);
         ExtractKeyPhraseResult extractKeyPhraseResult2 = new ExtractKeyPhraseResult("1", textDocumentStatistics2, null, keyPhrasesList2);
 
-        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics().setDocumentCount(2).setErroneousDocumentCount(0).setTransactionCount(2).setValidDocumentCount(2);
+        TextDocumentBatchStatistics textDocumentBatchStatistics = new TextDocumentBatchStatistics(2, 0, 2, 2);
         List<ExtractKeyPhraseResult> extractKeyPhraseResultList = Arrays.asList(extractKeyPhraseResult1, extractKeyPhraseResult2);
 
         return new DocumentResultCollection<>(extractKeyPhraseResultList, MODEL_VERSION, textDocumentBatchStatistics);
     }
 
     static DocumentResultCollection<TextSentimentResult> getExpectedBatchTextSentiment() {
-        final TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics().setCharacterCount(67)
-            .setTransactionCount(1);
-        final TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics().setCharacterCount(67)
-            .setTransactionCount(1);
+        final TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics(67, 1);
+        final TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics(67, 1);
 
         final TextSentiment expectedDocumentSentiment = new TextSentiment(TextSentimentClass.MIXED,
             0.00019, 0.5, 0.4, 66, 0);
@@ -1008,8 +991,7 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
 
         return new DocumentResultCollection<>(Arrays.asList(textSentimentResult1, textSentimentResult2),
             MODEL_VERSION,
-            new TextDocumentBatchStatistics().setDocumentCount(2).setErroneousDocumentCount(0)
-                .setTransactionCount(2).setValidDocumentCount(2));
+            new TextDocumentBatchStatistics(2, 0, 2, 2));
     }
 
     private TextAnalyticsRequestOptions setTextAnalyticsRequestOptions() {

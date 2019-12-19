@@ -266,9 +266,9 @@ public final class TextAnalyticsAsyncClient {
         return service.languagesWithRestResponseAsync(
             languageBatchInput, options == null ? null : options.getModelVersion(),
             options == null ? null : options.showStatistics(), context)
-            .doOnSubscribe(ignoredValue -> logger.info("A batch of language input - {}", languageBatchInput))
-            .doOnSuccess(response -> logger.info("A batch of detected language output - {}", languageBatchInput))
-            .doOnError(error -> logger.warning("Failed to detected languages - {}", languageBatchInput))
+            .doOnSubscribe(ignoredValue -> logger.info("A batch of language input - {}", ignoredValue))
+            .doOnSuccess(response -> logger.info("A batch of detected language output - {}", response.getValue()))
+            .doOnError(error -> logger.warning("Failed to detected languages - {}", error))
             .map(response -> new SimpleResponse<>(response, toDocumentResultCollection(response.getValue())));
     }
 
@@ -423,9 +423,9 @@ public final class TextAnalyticsAsyncClient {
             batchInput,
             options == null ? null : options.getModelVersion(),
             options == null ? null : options.showStatistics(), context)
-            .doOnSubscribe(ignoredValue -> logger.info("A batch of named entities input - {}", batchInput))
-            .doOnSuccess(response -> logger.info("A batch of named entities output - {}", batchInput))
-            .doOnError(error -> logger.warning("Failed to named entities - {}", batchInput))
+            .doOnSubscribe(ignoredValue -> logger.info("A batch of named entities input - {}", ignoredValue))
+            .doOnSuccess(response -> logger.info("A batch of named entities output - {}", response.getValue()))
+            .doOnError(error -> logger.warning("Failed to named entities - {}", error))
             .map(response -> new SimpleResponse<>(response, toDocumentResultCollection(response.getValue())));
     }
 
@@ -595,9 +595,9 @@ public final class TextAnalyticsAsyncClient {
             batchInput,
             options == null ? null : options.getModelVersion(),
             options == null ? null : options.showStatistics(), context)
-            .doOnSubscribe(ignoredValue -> logger.info("A batch of PII entities input - {}", batchInput))
-            .doOnSuccess(response -> logger.info("A batch of PII entities output - {}", batchInput))
-            .doOnError(error -> logger.warning("Failed to PII entities - {}", batchInput))
+            .doOnSubscribe(ignoredValue -> logger.info("A batch of PII entities input - {}", ignoredValue))
+            .doOnSuccess(response -> logger.info("A batch of PII entities output - {}", response.getValue()))
+            .doOnError(error -> logger.warning("Failed to PII entities - {}", error))
             .map(response -> new SimpleResponse<>(response, toDocumentResultCollection(response.getValue())));
     }
 
@@ -764,39 +764,36 @@ public final class TextAnalyticsAsyncClient {
             batchInput,
             options == null ? null : options.getModelVersion(),
             options == null ? null : options.showStatistics(), context)
-            .doOnSubscribe(ignoredValue -> logger.info("A batch of linked entities input - {}", batchInput))
-            .doOnSuccess(response -> logger.info("A batch of linked entities output - {}", batchInput))
-            .doOnError(error -> logger.warning("Failed to linked entities - {}", batchInput))
+            .doOnSubscribe(ignoredValue -> logger.info("A batch of linked entities input - {}", ignoredValue))
+            .doOnSuccess(response -> logger.info("A batch of linked entities output - {}", response.getValue()))
+            .doOnError(error -> logger.warning("Failed to linked entities - {}", error))
             .map(response -> new SimpleResponse<>(response, toDocumentResultCollection(response.getValue())));
     }
 
     private DocumentResultCollection<RecognizeLinkedEntitiesResult> toDocumentResultCollection(
         final EntityLinkingResult entityLinkingResult) {
         return new DocumentResultCollection<>(getDocumentLinkedEntities(entityLinkingResult),
-            entityLinkingResult.getModelVersion(), entityLinkingResult.getStatistics() == null ? null : mapBatchStatistics(entityLinkingResult.getStatistics()));
+            entityLinkingResult.getModelVersion(), entityLinkingResult.getStatistics() == null ? null
+            : mapBatchStatistics(entityLinkingResult.getStatistics()));
     }
 
     private List<RecognizeLinkedEntitiesResult> getDocumentLinkedEntities(final EntityLinkingResult entitiesResult) {
         List<RecognizeLinkedEntitiesResult> validDocumentList = new ArrayList<>();
         for (DocumentLinkedEntities documentLinkedEntities : entitiesResult.getDocuments()) {
             validDocumentList.add(new RecognizeLinkedEntitiesResult(documentLinkedEntities.getId(),
-                documentLinkedEntities.getStatistics() == null ? null :
-                    convertToTextDocumentStatistics(documentLinkedEntities.getStatistics()),
+                documentLinkedEntities.getStatistics() == null ? null
+                    : convertToTextDocumentStatistics(documentLinkedEntities.getStatistics()),
                 null, mapLinkedEntity(documentLinkedEntities.getEntities())));
         }
         List<RecognizeLinkedEntitiesResult> errorDocumentList = new ArrayList<>();
         for (DocumentError documentError : entitiesResult.getErrors()) {
-            final TextAnalyticsError serviceError = convertToError(documentError.getError());
-            final TextAnalyticsError error = new TextAnalyticsError().setCode(serviceError.getCode()).setMessage(serviceError.getMessage())
-                .setTarget(serviceError.getTarget());
+            final com.azure.ai.textanalytics.models.TextAnalyticsError error = convertToError(documentError.getError());
             errorDocumentList.add(new RecognizeLinkedEntitiesResult(documentError.getId(), null, error, null));
         }
         return Stream.concat(validDocumentList.stream(), errorDocumentList.stream()).collect(Collectors.toList());
     }
 
-
     // Key Phrases
-
     /**
      * Returns a list of strings denoting the key phrases in the input text.
      *
@@ -951,16 +948,17 @@ public final class TextAnalyticsAsyncClient {
             batchInput,
             options == null ? null : options.getModelVersion(),
             options == null ? null : options.showStatistics(), context)
-            .doOnSubscribe(ignoredValue -> logger.info("A batch of key phrases input - {}", batchInput))
-            .doOnSuccess(response -> logger.info("A batch of key phrases output - {}", batchInput))
-            .doOnError(error -> logger.warning("Failed to key phrases - {}", batchInput))
+            .doOnSubscribe(ignoredValue -> logger.info("A batch of key phrases input - {}", ignoredValue))
+            .doOnSuccess(response -> logger.info("A batch of key phrases output - {}", response.getValue()))
+            .doOnError(error -> logger.warning("Failed to key phrases - {}", error))
             .map(response -> new SimpleResponse<>(response, toDocumentResultCollection(response.getValue())));
     }
 
     private DocumentResultCollection<ExtractKeyPhraseResult> toDocumentResultCollection(
         final com.azure.ai.textanalytics.implementation.models.KeyPhraseResult keyPhraseResult) {
         return new DocumentResultCollection<>(getKeyPhraseResults(keyPhraseResult),
-            keyPhraseResult.getModelVersion(), mapBatchStatistics(keyPhraseResult.getStatistics()));
+            keyPhraseResult.getModelVersion(), keyPhraseResult.getStatistics() == null ? null
+            : mapBatchStatistics(keyPhraseResult.getStatistics()));
     }
 
     private List<ExtractKeyPhraseResult> getKeyPhraseResults(
@@ -968,16 +966,14 @@ public final class TextAnalyticsAsyncClient {
         List<ExtractKeyPhraseResult> validDocumentList = new ArrayList<>();
         for (DocumentKeyPhrases documentKeyPhrases : keyPhraseResult.getDocuments()) {
             validDocumentList.add(new ExtractKeyPhraseResult(documentKeyPhrases.getId(),
-                documentKeyPhrases.getStatistics() == null ? null :
-                    convertToTextDocumentStatistics(documentKeyPhrases.getStatistics()), null,
+                documentKeyPhrases.getStatistics() == null ? null
+                    : convertToTextDocumentStatistics(documentKeyPhrases.getStatistics()), null,
                 documentKeyPhrases.getKeyPhrases()));
         }
         List<ExtractKeyPhraseResult> errorDocumentList = new ArrayList<>();
 
         for (DocumentError documentError : keyPhraseResult.getErrors()) {
-            final TextAnalyticsError serviceError = convertToError(documentError.getError());
-            final TextAnalyticsError error = new TextAnalyticsError().setCode(serviceError.getCode()).setMessage(serviceError.getMessage())
-                .setTarget(serviceError.getTarget());
+            final com.azure.ai.textanalytics.models.TextAnalyticsError error = convertToError(documentError.getError());
             errorDocumentList.add(new ExtractKeyPhraseResult(documentError.getId(), null, error, null));
         }
         return Stream.concat(validDocumentList.stream(), errorDocumentList.stream()).collect(Collectors.toList());
@@ -1137,9 +1133,9 @@ public final class TextAnalyticsAsyncClient {
             batchInput,
             options == null ? null : options.getModelVersion(),
             options == null ? null : options.showStatistics(), context)
-            .doOnSubscribe(ignoredValue -> logger.info("A batch of text sentiment input - {}", batchInput))
-            .doOnSuccess(response -> logger.info("A batch of text sentiment output - {}", batchInput))
-            .doOnError(error -> logger.warning("Failed to text sentiment - {}", batchInput))
+            .doOnSubscribe(ignoredValue -> logger.info("A batch of text sentiment input - {}", ignoredValue))
+            .doOnSuccess(response -> logger.info("A batch of text sentiment output - {}", response))
+            .doOnError(error -> logger.warning("Failed to text sentiment - {}", error))
             .map(response -> new SimpleResponse<>(response, toDocumentResultCollection(response.getValue())));
     }
 
@@ -1164,7 +1160,8 @@ public final class TextAnalyticsAsyncClient {
     private DocumentResultCollection<TextSentimentResult> toDocumentResultCollection(
         final SentimentResponse sentimentResponse) {
         return new DocumentResultCollection<>(getDocumentTextSentiment(sentimentResponse),
-            sentimentResponse.getModelVersion(), mapBatchStatistics(sentimentResponse.getStatistics()));
+            sentimentResponse.getModelVersion(), sentimentResponse.getStatistics() == null ? null
+            : mapBatchStatistics(sentimentResponse.getStatistics()));
     }
 
     private List<TextSentimentResult> getDocumentTextSentiment(final SentimentResponse sentimentResponse) {
@@ -1191,8 +1188,8 @@ public final class TextAnalyticsAsyncClient {
             convertToSentenceSentiments(documentSentiment.getSentences());
 
         return new TextSentimentResult(documentSentiment.getId(),
-            documentSentiment.getStatistics() == null ? null :
-                convertToTextDocumentStatistics(documentSentiment.getStatistics()), null,
+            documentSentiment.getStatistics() == null ? null
+                : convertToTextDocumentStatistics(documentSentiment.getStatistics()), null,
             new TextSentiment(documentSentimentClass, sentimentScores[0], sentimentScores[1], sentimentScores[2],
                 sentenceSentimentTexts.stream().mapToInt(TextSentiment::getLength).sum(), 0),
             sentenceSentimentTexts);
@@ -1272,9 +1269,7 @@ public final class TextAnalyticsAsyncClient {
     }
 
     private TextSentimentResult convertToErrorTextSentimentResult(final DocumentError documentError) {
-        final TextAnalyticsError serviceError = convertToError(documentError.getError());
-        final TextAnalyticsError error = new TextAnalyticsError().setCode(serviceError.getCode()).setMessage(serviceError.getMessage())
-            .setTarget(serviceError.getTarget());
+        final com.azure.ai.textanalytics.models.TextAnalyticsError error = convertToError(documentError.getError());
         return new TextSentimentResult(documentError.getId(), null, error, null,
             null);
     }
@@ -1289,7 +1284,7 @@ public final class TextAnalyticsAsyncClient {
     private DocumentResultCollection<DetectLanguageResult> toDocumentResultCollection(
         final LanguageResult languageResult) {
         return new DocumentResultCollection<>(getDocumentLanguages(languageResult), languageResult.getModelVersion(),
-            mapBatchStatistics(languageResult.getStatistics()));
+            languageResult.getStatistics() == null ? null : mapBatchStatistics(languageResult.getStatistics()));
     }
 
     /**
@@ -1303,16 +1298,14 @@ public final class TextAnalyticsAsyncClient {
         List<DetectLanguageResult> validDocumentList = new ArrayList<>();
         for (DocumentLanguage documentLanguage : languageResult.getDocuments()) {
             validDocumentList.add(new DetectLanguageResult(documentLanguage.getId(),
-                documentLanguage.getStatistics() == null ? null :
-                    convertToTextDocumentStatistics(documentLanguage.getStatistics()),
+                documentLanguage.getStatistics() == null ? null
+                    : convertToTextDocumentStatistics(documentLanguage.getStatistics()),
                 null, setPrimaryLanguage(documentLanguage.getDetectedLanguages()),
                 convertToDetectLanguages(documentLanguage.getDetectedLanguages())));
         }
         List<DetectLanguageResult> errorDocumentList = new ArrayList<>();
         for (DocumentError documentError : languageResult.getErrors()) {
-            TextAnalyticsError serviceError = convertToError(documentError.getError());
-            TextAnalyticsError error = new TextAnalyticsError().setCode(serviceError.getCode()).setMessage(serviceError.getMessage())
-                .setTarget(serviceError.getTarget());
+            com.azure.ai.textanalytics.models.TextAnalyticsError error = convertToError(documentError.getError());
             errorDocumentList.add(new DetectLanguageResult(documentError.getId(), null, error, null,
                 null));
         }
@@ -1323,49 +1316,46 @@ public final class TextAnalyticsAsyncClient {
         List<com.azure.ai.textanalytics.implementation.models.DetectedLanguage> detectedLanguages) {
         List<DetectedLanguage> detectedLanguagesList = new ArrayList<>();
         for (com.azure.ai.textanalytics.implementation.models.DetectedLanguage detectedLanguage : detectedLanguages) {
-            detectedLanguagesList.add(new DetectedLanguage().setName(detectedLanguage.getName())
-                .setIso6391Name(detectedLanguage.getIso6391Name()).setScore(detectedLanguage.getScore()));
+            detectedLanguagesList.add(new DetectedLanguage(detectedLanguage.getName(),
+                detectedLanguage.getIso6391Name(), detectedLanguage.getScore()));
         }
         return detectedLanguagesList;
     }
 
     private DetectedLanguage setPrimaryLanguage(
         List<com.azure.ai.textanalytics.implementation.models.DetectedLanguage> detectedLanguages) {
-        if (detectedLanguages.size() > 1) {
+        if (detectedLanguages.size() >= 1) {
             com.azure.ai.textanalytics.implementation.models.DetectedLanguage detectedLanguageResult =
                 detectedLanguages.get(0);
-            return new DetectedLanguage().setName(detectedLanguageResult.getName())
-                .setIso6391Name(detectedLanguageResult.getIso6391Name()).setScore(detectedLanguageResult.getScore());
+            return new DetectedLanguage(detectedLanguageResult.getName(), detectedLanguageResult.getIso6391Name(),
+                detectedLanguageResult.getScore());
         }
         return null;
     }
 
     private TextDocumentBatchStatistics mapBatchStatistics(RequestStatistics statistics) {
-        return new TextDocumentBatchStatistics().setDocumentCount(statistics.getDocumentsCount())
-            .setErroneousDocumentCount(statistics.getErroneousDocumentsCount())
-            .setTransactionCount(statistics.getTransactionsCount())
-            .setValidDocumentCount(statistics.getValidDocumentsCount());
+        return new TextDocumentBatchStatistics(statistics.getDocumentsCount(), statistics.getErroneousDocumentsCount(),
+            statistics.getValidDocumentsCount(), statistics.getTransactionsCount());
     }
 
     private DocumentResultCollection<RecognizeEntitiesResult> toDocumentResultCollection(
         final EntitiesResult entitiesResult) {
         return new DocumentResultCollection<>(getDocumentNamedEntities(entitiesResult),
-            entitiesResult.getModelVersion(), mapBatchStatistics(entitiesResult.getStatistics()));
+            entitiesResult.getModelVersion(), entitiesResult.getStatistics() == null ? null
+            : mapBatchStatistics(entitiesResult.getStatistics()));
     }
 
     private List<RecognizeEntitiesResult> getDocumentNamedEntities(final EntitiesResult entitiesResult) {
         List<RecognizeEntitiesResult> validDocumentList = new ArrayList<>();
         for (DocumentEntities documentEntities : entitiesResult.getDocuments()) {
             validDocumentList.add(new RecognizeEntitiesResult(documentEntities.getId(),
-                documentEntities.getStatistics() == null ? null :
-                    convertToTextDocumentStatistics(documentEntities.getStatistics()),
+                documentEntities.getStatistics() == null ? null
+                    : convertToTextDocumentStatistics(documentEntities.getStatistics()),
                 null, mapToNamedEntities(documentEntities.getEntities())));
         }
         List<RecognizeEntitiesResult> errorDocumentList = new ArrayList<>();
         for (DocumentError documentError : entitiesResult.getErrors()) {
-            final TextAnalyticsError serviceError = convertToError(documentError.getError());
-            final TextAnalyticsError error = new TextAnalyticsError().setCode(serviceError.getCode()).setMessage(serviceError.getMessage())
-                .setTarget(serviceError.getTarget());
+            final com.azure.ai.textanalytics.models.TextAnalyticsError error = convertToError(documentError.getError());
             errorDocumentList.add(new RecognizeEntitiesResult(documentError.getId(), null, error, null));
         }
         return Stream.concat(validDocumentList.stream(), errorDocumentList.stream()).collect(Collectors.toList());
@@ -1374,9 +1364,8 @@ public final class TextAnalyticsAsyncClient {
     private List<NamedEntity> mapToNamedEntities(List<Entity> entities) {
         List<NamedEntity> namedEntityList = new ArrayList<>();
         for (Entity entity : entities) {
-            namedEntityList.add(new NamedEntity().setScore(entity.getScore()).setSubtype(entity.getSubtype())
-                .setType(entity.getType()).setLength(entity.getLength()).setOffset(entity.getOffset())
-                .setText(entity.getText()));
+            namedEntityList.add(new NamedEntity(entity.getText(), entity.getType(), entity.getSubtype(),
+                entity.getOffset(), entity.getLength(), entity.getScore()));
         }
         return namedEntityList;
     }
@@ -1388,18 +1377,15 @@ public final class TextAnalyticsAsyncClient {
     }
 
     private TextDocumentStatistics convertToTextDocumentStatistics(DocumentStatistics statistics) {
-        return new TextDocumentStatistics().setCharacterCount(statistics.getCharactersCount())
-            .setTransactionCount(statistics.getTransactionsCount());
+        return new TextDocumentStatistics(statistics.getCharactersCount(), statistics.getTransactionsCount());
     }
 
     private List<com.azure.ai.textanalytics.models.LinkedEntity> mapLinkedEntity(List<LinkedEntity> linkedEntities) {
         List<com.azure.ai.textanalytics.models.LinkedEntity> linkedEntitiesList = new ArrayList<>();
         for (LinkedEntity linkedEntity : linkedEntities) {
-            linkedEntitiesList.add(new com.azure.ai.textanalytics.models.LinkedEntity()
-                .setDataSource(linkedEntity.getDataSource()).setId(linkedEntity.getId())
-                .setLanguage(linkedEntity.getLanguage()).setName(linkedEntity.getName())
-                .setLinkedEntityMatches(mapLinkedEntityMatches(linkedEntity.getMatches()))
-                .setUrl(linkedEntity.getUrl()));
+            linkedEntitiesList.add(new com.azure.ai.textanalytics.models.LinkedEntity(linkedEntity.getName(),
+                mapLinkedEntityMatches(linkedEntity.getMatches()), linkedEntity.getLanguage(), linkedEntity.getId(),
+                linkedEntity.getUrl(), linkedEntity.getDataSource()));
         }
         return linkedEntitiesList;
     }
@@ -1407,8 +1393,8 @@ public final class TextAnalyticsAsyncClient {
     private List<LinkedEntityMatch> mapLinkedEntityMatches(List<Match> matches) {
         List<LinkedEntityMatch> linkedEntityMatchesList = new ArrayList<>();
         for (Match match : matches) {
-            linkedEntityMatchesList.add(new LinkedEntityMatch().setScore(match.getScore())
-                .setLength(match.getLength()).setText(match.getText()).setOffset(match.getOffset()));
+            linkedEntityMatchesList.add(new LinkedEntityMatch(match.getText(), match.getScore(), match.getLength(),
+                match.getOffset()));
         }
         return linkedEntityMatchesList;
     }
@@ -1416,8 +1402,8 @@ public final class TextAnalyticsAsyncClient {
     private com.azure.ai.textanalytics.models.TextAnalyticsError convertToError(TextAnalyticsError textAnalyticsError) {
         return new com.azure.ai.textanalytics.models.TextAnalyticsError(
             convertToErrorCodeValue(textAnalyticsError.getCode()), textAnalyticsError.getMessage(),
-            textAnalyticsError.getTarget(), textAnalyticsError.getInnerError(),
-            setErrors(textAnalyticsError.getDetails()));
+            textAnalyticsError.getTarget(), textAnalyticsError.getDetails() == null ? null
+            : setErrors(textAnalyticsError.getDetails()));
     }
 
     private List<com.azure.ai.textanalytics.models.TextAnalyticsError> setErrors(List<TextAnalyticsError> details) {
@@ -1426,7 +1412,7 @@ public final class TextAnalyticsAsyncClient {
             detailsList.add(new com.azure.ai.textanalytics.models.TextAnalyticsError(
                 convertToErrorCodeValue(error.getCode()),
                 error.getMessage(),
-                error.getTarget(), error.getInnerError(), setErrors(error.getDetails())));
+                error.getTarget(), error.getDetails() == null ? null : setErrors(error.getDetails())));
         }
         return detailsList;
     }
@@ -1435,7 +1421,7 @@ public final class TextAnalyticsAsyncClient {
         com.azure.ai.textanalytics.implementation.models.ErrorCodeValue errorCodeValue) {
         return ErrorCodeValue.fromString(errorCodeValue.toString());
     }
-    
+
     /**
      * Get default country hint code.
      *
