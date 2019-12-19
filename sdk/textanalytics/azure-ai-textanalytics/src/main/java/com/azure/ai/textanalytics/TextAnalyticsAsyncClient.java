@@ -55,6 +55,7 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -152,6 +153,7 @@ public final class TextAnalyticsAsyncClient {
     }
 
     Mono<Response<DetectLanguageResult>> detectLanguageWithResponse(String text, String countryHint, Context context) {
+        Objects.requireNonNull(text, "'text' cannot be null.");
         List<DetectLanguageInput> languageInputs = Collections.singletonList(new DetectLanguageInput("0",
             text, countryHint));
         return detectBatchLanguagesWithResponse(languageInputs, null, context).map(response ->
@@ -201,8 +203,8 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<DetectLanguageResult>>> detectLanguagesWithResponse(List<String> textInputs,
         String countryHint, Context context) {
-        List<DetectLanguageInput> detectLanguageInputs = textInputs == null ? null
-            : mapByIndex(textInputs, (index, value) -> new DetectLanguageInput(index, value, countryHint));
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+        List<DetectLanguageInput> detectLanguageInputs = mapByIndex(textInputs, (index, value) -> new DetectLanguageInput(index, value, countryHint));
 
         return detectBatchLanguagesWithResponse(detectLanguageInputs, null, context);
     }
@@ -252,6 +254,7 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<DetectLanguageResult>>> detectBatchLanguagesWithResponse(
         List<DetectLanguageInput> textInputs, TextAnalyticsRequestOptions options, Context context) {
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
 
         final LanguageBatchInput languageBatchInput = new LanguageBatchInput()
             .setDocuments(textInputs.stream().map(detectLanguageInput -> new LanguageInput()
@@ -268,7 +271,6 @@ public final class TextAnalyticsAsyncClient {
     }
 
     // Named Entity
-
     /**
      * Returns a list of general named entities in the provided text. For a list of supported entity types, check:
      * <a href="https://aka.ms/taner"></a> For a list of enabled languages, check: <a href="https://aka.ms/talangs"></a>
@@ -312,6 +314,8 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<RecognizeEntitiesResult>> recognizeEntitiesWithResponse(String text, String language,
         Context context) {
+        Objects.requireNonNull(text, "'text' cannot be null.");
+
         return recognizeBatchEntitiesWithResponse(
             Collections.singletonList(new TextDocumentInput("0", text, language)), null, context)
             .map(response -> new SimpleResponse<>(response, response.getValue().iterator().next()));
@@ -360,7 +364,9 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<RecognizeEntitiesResult>>> recognizeEntitiesWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
+        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         return recognizeBatchEntitiesWithResponse(documentInputs, null, context);
     }
@@ -408,9 +414,11 @@ public final class TextAnalyticsAsyncClient {
     }
 
     Mono<Response<DocumentResultCollection<RecognizeEntitiesResult>>> recognizeBatchEntitiesWithResponse(
-        List<TextDocumentInput> documents, TextAnalyticsRequestOptions options, Context context) {
+        List<TextDocumentInput> textInputs, TextAnalyticsRequestOptions options, Context context) {
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
         final MultiLanguageBatchInput batchInput = new MultiLanguageBatchInput()
-            .setDocuments(convertToMultiLanguageInput(documents));
+            .setDocuments(convertToMultiLanguageInput(textInputs));
         return service.entitiesRecognitionGeneralWithRestResponseAsync(
             batchInput,
             options == null ? null : options.getModelVersion(),
@@ -467,6 +475,8 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<RecognizePiiEntitiesResult>> recognizePiiEntitiesWithResponse(String text, String language,
         Context context) {
+        Objects.requireNonNull(text, "'text' cannot be null.");
+
         return recognizeBatchPiiEntitiesWithResponse(
            Collections.singletonList(new TextDocumentInput("0", text, language)), null, context)
             .map(response -> new SimpleResponse<>(response, response.getValue().iterator().next()));
@@ -520,7 +530,9 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<RecognizePiiEntitiesResult>>> recognizePiiEntitiesWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
+        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         try {
             return recognizeBatchPiiEntitiesWithResponse(documentInputs, null, context);
@@ -576,9 +588,10 @@ public final class TextAnalyticsAsyncClient {
     }
 
     Mono<Response<DocumentResultCollection<RecognizePiiEntitiesResult>>> recognizeBatchPiiEntitiesWithResponse(
-        List<TextDocumentInput> documents, TextAnalyticsRequestOptions options, Context context) {
+        List<TextDocumentInput> textInputs, TextAnalyticsRequestOptions options, Context context) {
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
         final MultiLanguageBatchInput batchInput = new MultiLanguageBatchInput()
-            .setDocuments(convertToMultiLanguageInput(documents));
+            .setDocuments(convertToMultiLanguageInput(textInputs));
         return service.entitiesRecognitionPiiWithRestResponseAsync(
             batchInput,
             options == null ? null : options.getModelVersion(),
@@ -634,6 +647,8 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<RecognizeLinkedEntitiesResult>> recognizeLinkedEntitiesWithResponse(String text, String language,
         Context context) {
+        Objects.requireNonNull(text, "'text' cannot be null.");
+
         return recognizeBatchLinkedEntitiesWithResponse(
             Collections.singletonList(new TextDocumentInput("0", text, language)), null, context)
             .map(response -> new SimpleResponse<>(response, response.getValue().iterator().next()));
@@ -686,7 +701,9 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<RecognizeLinkedEntitiesResult>>> recognizeLinkedEntitiesWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
+        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         try {
             return recognizeBatchLinkedEntitiesWithResponse(documentInputs, null, context);
@@ -742,6 +759,8 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<RecognizeLinkedEntitiesResult>>> recognizeBatchLinkedEntitiesWithResponse(
         List<TextDocumentInput> textInputs, TextAnalyticsRequestOptions options, Context context) {
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
         final MultiLanguageBatchInput batchInput = new MultiLanguageBatchInput()
             .setDocuments(convertToMultiLanguageInput(textInputs));
         return service.entitiesLinkingWithRestResponseAsync(
@@ -798,6 +817,8 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<ExtractKeyPhraseResult>> extractKeyPhrasesWithResponse(String text, String language,
         Context context) {
+        Objects.requireNonNull(text, "'text' cannot be null.");
+
         return extractBatchKeyPhrasesWithResponse(
             Collections.singletonList(new TextDocumentInput("0", text, language)), null, context)
             .map(response -> new SimpleResponse<>(response, response.getValue().iterator().next()));
@@ -847,7 +868,9 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<ExtractKeyPhraseResult>>> extractKeyPhrasesWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
+        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         try {
             return extractBatchKeyPhrasesWithResponse(documentInputs, null, context);
@@ -900,9 +923,11 @@ public final class TextAnalyticsAsyncClient {
     }
 
     Mono<Response<DocumentResultCollection<ExtractKeyPhraseResult>>> extractBatchKeyPhrasesWithResponse(
-        List<TextDocumentInput> documents, TextAnalyticsRequestOptions options, Context context) {
+        List<TextDocumentInput> textInputs, TextAnalyticsRequestOptions options, Context context) {
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
         final MultiLanguageBatchInput batchInput = new MultiLanguageBatchInput()
-            .setDocuments(convertToMultiLanguageInput(documents));
+            .setDocuments(convertToMultiLanguageInput(textInputs));
         return service.keyPhrasesWithRestResponseAsync(
             batchInput,
             options == null ? null : options.getModelVersion(),
@@ -976,6 +1001,8 @@ public final class TextAnalyticsAsyncClient {
     }
 
     Mono<Response<AnalyzeSentimentResult>> analyzeSentimentWithResponse(String text, String language, Context context) {
+        Objects.requireNonNull(text, "'text' cannot be null.");
+
         return analyzeBatchSentimentWithResponse(
             Collections.singletonList(new TextDocumentInput("0", text, language)), null, context)
             .map(response -> new SimpleResponse<>(response, response.getValue().iterator().next()));
@@ -1026,7 +1053,9 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<AnalyzeSentimentResult>>> analyzeSentimentWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
+        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         return analyzeBatchSentimentWithResponse(documentInputs, null, context);
     }
@@ -1076,9 +1105,11 @@ public final class TextAnalyticsAsyncClient {
     }
 
     Mono<Response<DocumentResultCollection<AnalyzeSentimentResult>>> analyzeBatchSentimentWithResponse(
-        List<TextDocumentInput> documents, TextAnalyticsRequestOptions options, Context context) {
+        List<TextDocumentInput> textInputs, TextAnalyticsRequestOptions options, Context context) {
+        Objects.requireNonNull(textInputs, "'textInputs' cannot be null.");
+
         final MultiLanguageBatchInput batchInput = new MultiLanguageBatchInput()
-            .setDocuments(convertToMultiLanguageInput(documents));
+            .setDocuments(convertToMultiLanguageInput(textInputs));
         return service.sentimentWithRestResponseAsync(
             batchInput,
             options == null ? null : options.getModelVersion(),

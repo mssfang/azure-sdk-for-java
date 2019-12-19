@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TextAnalyticsClientTest extends TextAnalyticsClientTestBase {
 
@@ -82,6 +83,15 @@ public class TextAnalyticsClientTest extends TextAnalyticsClientTestBase {
         List<DetectedLanguage> expectedLanguageList = Arrays.asList(primaryLanguage);
         validateDetectedLanguages(
             client.detectLanguage("This is a test English Text").getDetectedLanguages(), expectedLanguageList);
+    }
+
+    /**
+     * Verifies that an exception is thrown when null text is passed.
+     */
+    @Test
+    public void detectLanguagesNullInput() {
+        assertThrows(NullPointerException.class, () -> client.detectBatchLanguagesWithResponse(null, null,
+            Context.NONE).getValue());
     }
 
     /**
