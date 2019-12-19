@@ -369,7 +369,8 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
         final List<TextDocumentInput> textDocumentInputs = Arrays.asList(
             new TextDocumentInput("0", "I had a wonderful trip to Seattle last week."),
             new TextDocumentInput("1", "I work at Microsoft."));
-        testRunner.accept(textDocumentInputs, setTextAnalyticsRequestOptions());
+        TextAnalyticsRequestOptions options = new TextAnalyticsRequestOptions().setShowStatistics(true);
+        testRunner.accept(textDocumentInputs, options);
     }
 
     static void recognizeLinkedLanguageHintRunner(BiConsumer<List<String>, String> testRunner) {
