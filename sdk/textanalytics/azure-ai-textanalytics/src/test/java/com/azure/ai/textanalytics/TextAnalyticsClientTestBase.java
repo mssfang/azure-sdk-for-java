@@ -20,7 +20,7 @@ import com.azure.ai.textanalytics.models.TextDocumentInput;
 import com.azure.ai.textanalytics.models.TextDocumentStatistics;
 import com.azure.ai.textanalytics.models.TextSentiment;
 import com.azure.ai.textanalytics.models.TextSentimentClass;
-import com.azure.ai.textanalytics.models.TextSentimentResult;
+import com.azure.ai.textanalytics.models.AnalyzeSentimentResult;
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.exception.HttpResponseException;
 import com.azure.core.http.HttpClient;
@@ -259,10 +259,11 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
             new DetectLanguageInput("0", "This is written in English", "US"),
             new DetectLanguageInput("1", "Este es un document escrito en Español."),
             new DetectLanguageInput("2", "~@!~:)", "US")
-            // add error document => empty text
         );
+        TextAnalyticsRequestOptions options = new TextAnalyticsRequestOptions().setShowStatistics(true);
+        showStatistics = true;
 
-        testRunner.accept(detectLanguageInputs, setTextAnalyticsRequestOptions());
+        testRunner.accept(detectLanguageInputs, options);
     }
 
     void detectLanguageDuplicateIdRunner(BiConsumer<List<DetectLanguageInput>,
@@ -272,7 +273,7 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
             new DetectLanguageInput("0", "Este es un document escrito en Español.")
         );
 
-        testRunner.accept(detectLanguageInputs, setTextAnalyticsRequestOptions());
+        testRunner.accept(detectLanguageInputs, null);
     }
 
     static void detectLanguagesCountryHintRunner(BiConsumer<List<String>, String> testRunner) {
@@ -326,7 +327,10 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
         final List<TextDocumentInput> textDocumentInputs = Arrays.asList(
             new TextDocumentInput("0", "I had a wonderful trip to Seattle last week."),
             new TextDocumentInput("1", "I work at Microsoft."));
-        testRunner.accept(textDocumentInputs, setTextAnalyticsRequestOptions());
+        TextAnalyticsRequestOptions options = new TextAnalyticsRequestOptions().setShowStatistics(true);
+        showStatistics = true;
+
+        testRunner.accept(textDocumentInputs, options);
     }
 
     // Pii Entity runner
@@ -358,7 +362,9 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
         final List<TextDocumentInput> textDocumentInputs = Arrays.asList(
             new TextDocumentInput("0", "Microsoft employee with ssn 859-98-0987 is using our awesome API's."),
             new TextDocumentInput("1", "Your ABA number - 111000025 - is the first 9 digits in the lower left hand corner of your personal check."));
-        testRunner.accept(textDocumentInputs, setTextAnalyticsRequestOptions());
+        TextAnalyticsRequestOptions options = new TextAnalyticsRequestOptions().setShowStatistics(true);
+        showStatistics = true;
+        testRunner.accept(textDocumentInputs, options);
     }
 
     // Linked Entity runner
@@ -368,6 +374,8 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
             new TextDocumentInput("0", "I had a wonderful trip to Seattle last week."),
             new TextDocumentInput("1", "I work at Microsoft."));
         TextAnalyticsRequestOptions options = new TextAnalyticsRequestOptions().setShowStatistics(true);
+        showStatistics = true;
+
         testRunner.accept(textDocumentInputs, options);
     }
 
@@ -400,7 +408,10 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
         final List<TextDocumentInput> textDocumentInputs = Arrays.asList(
             new TextDocumentInput("0", "Hello world. This is some input text that I love."),
             new TextDocumentInput("1", "Bonjour tout le monde", "fr"));
-        testRunner.accept(textDocumentInputs, setTextAnalyticsRequestOptions());
+        TextAnalyticsRequestOptions options = new TextAnalyticsRequestOptions().setShowStatistics(true);
+        showStatistics = true;
+
+        testRunner.accept(textDocumentInputs, options);
     }
 
     static void extractKeyPhrasesLanguageHintRunner(BiConsumer<List<String>, String> testRunner) {
@@ -449,7 +460,9 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
             new TextDocumentInput("0", "The hotel was dark and unclean. The restaurant had amazing gnocchi."),
             new TextDocumentInput("1", "The restaurant had amazing gnocchi. The hotel was dark and unclean.")
         );
-        testRunner.accept(textDocumentInputs, setTextAnalyticsRequestOptions());
+        TextAnalyticsRequestOptions options = new TextAnalyticsRequestOptions().setShowStatistics(true);
+
+        testRunner.accept(textDocumentInputs, options);
     }
 
     static List<String> getSentimentInput() {
@@ -596,25 +609,25 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
                 });
                 break;
             case SENTIMENT:
-                final List<TextSentimentResult> expectedSentimentResults = expectedResult.stream()
-                    .filter(element -> element instanceof TextSentimentResult)
-                    .map(element -> (TextSentimentResult) element)
+                final List<AnalyzeSentimentResult> expectedSentimentResults = expectedResult.stream()
+                    .filter(element -> element instanceof AnalyzeSentimentResult)
+                    .map(element -> (AnalyzeSentimentResult) element)
                     .collect(Collectors.toList());
 
-                final List<TextSentimentResult> actualSentimentResults = actualResult.stream()
-                    .filter(element -> element instanceof TextSentimentResult)
-                    .map(element -> (TextSentimentResult) element)
+                final List<AnalyzeSentimentResult> actualSentimentResults = actualResult.stream()
+                    .filter(element -> element instanceof AnalyzeSentimentResult)
+                    .map(element -> (AnalyzeSentimentResult) element)
                     .collect(Collectors.toList());
 
-                expectedSentimentResults.sort(Comparator.comparing(TextSentimentResult::getId));
-                actualSentimentResults.sort(Comparator.comparing(TextSentimentResult::getId));
+                expectedSentimentResults.sort(Comparator.comparing(AnalyzeSentimentResult::getId));
+                actualSentimentResults.sort(Comparator.comparing(AnalyzeSentimentResult::getId));
                 final int actualSize = actualSentimentResults.size();
                 final int expectedSize = expectedSentimentResults.size();
                 assertEquals(expectedSize, actualSize);
 
                 for (int i = 0; i < actualSize; i++) {
-                    final TextSentimentResult actualSentimentResult = actualSentimentResults.get(i);
-                    final TextSentimentResult expectedSentimentResult = expectedSentimentResults.get(i);
+                    final AnalyzeSentimentResult actualSentimentResult = actualSentimentResults.get(i);
+                    final AnalyzeSentimentResult expectedSentimentResult = expectedSentimentResults.get(i);
 
                     if (actualSentimentResult.getError() == null) {
                         if (this.showStatistics) {
@@ -966,14 +979,14 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
         return new DocumentResultCollection<>(extractKeyPhraseResultList, MODEL_VERSION, textDocumentBatchStatistics);
     }
 
-    static DocumentResultCollection<TextSentimentResult> getExpectedBatchTextSentiment() {
+    static DocumentResultCollection<AnalyzeSentimentResult> getExpectedBatchTextSentiment() {
         final TextDocumentStatistics textDocumentStatistics1 = new TextDocumentStatistics(67, 1);
         final TextDocumentStatistics textDocumentStatistics2 = new TextDocumentStatistics(67, 1);
 
         final TextSentiment expectedDocumentSentiment = new TextSentiment(TextSentimentClass.MIXED,
             0.00019, 0.5, 0.4, 66, 0);
 
-        final TextSentimentResult textSentimentResult1 = new TextSentimentResult("0", textDocumentStatistics1,
+        final AnalyzeSentimentResult analyzeSentimentResult1 = new AnalyzeSentimentResult("0", textDocumentStatistics1,
             null,
             expectedDocumentSentiment,
             Arrays.asList(
@@ -981,7 +994,7 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
                 new TextSentiment(TextSentimentClass.POSITIVE, 0.0, 0.0, 0.99, 35, 32)
             ));
 
-        final TextSentimentResult textSentimentResult2 = new TextSentimentResult("1", textDocumentStatistics2,
+        final AnalyzeSentimentResult analyzeSentimentResult2 = new AnalyzeSentimentResult("1", textDocumentStatistics2,
             null,
             expectedDocumentSentiment,
             Arrays.asList(
@@ -989,14 +1002,8 @@ public abstract class TextAnalyticsClientTestBase extends TestBase {
                 new TextSentiment(TextSentimentClass.NEGATIVE, 0.99, 0.0, 0.0, 31, 36)
             ));
 
-        return new DocumentResultCollection<>(Arrays.asList(textSentimentResult1, textSentimentResult2),
+        return new DocumentResultCollection<>(Arrays.asList(analyzeSentimentResult1, analyzeSentimentResult2),
             MODEL_VERSION,
             new TextDocumentBatchStatistics(2, 0, 2, 2));
     }
-
-    private TextAnalyticsRequestOptions setTextAnalyticsRequestOptions() {
-        this.showStatistics = true;
-        return new TextAnalyticsRequestOptions().setShowStatistics(true);
-    }
-
 }

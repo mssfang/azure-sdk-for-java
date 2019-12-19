@@ -45,7 +45,7 @@ import com.azure.ai.textanalytics.models.TextDocumentInput;
 import com.azure.ai.textanalytics.models.TextDocumentStatistics;
 import com.azure.ai.textanalytics.models.TextSentiment;
 import com.azure.ai.textanalytics.models.TextSentimentClass;
-import com.azure.ai.textanalytics.models.TextSentimentResult;
+import com.azure.ai.textanalytics.models.AnalyzeSentimentResult;
 import com.azure.core.annotation.ReturnType;
 import com.azure.core.annotation.ServiceClient;
 import com.azure.core.annotation.ServiceMethod;
@@ -987,12 +987,12 @@ public final class TextAnalyticsAsyncClient {
      *
      * @param text the text to be analyzed.
      *
-     * @return A {@link Mono} containing the {@link TextSentimentResult text sentiment} of the text.
+     * @return A {@link Mono} containing the {@link AnalyzeSentimentResult text sentiment} of the text.
      *
      * @throws NullPointerException if {@code text} is {@code null}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<TextSentimentResult> analyzeSentiment(String text) {
+    public Mono<AnalyzeSentimentResult> analyzeSentiment(String text) {
         try {
             return analyzeSentimentWithResponse(text, defaultLanguage).flatMap(FluxUtil::toMono);
         } catch (RuntimeException ex) {
@@ -1009,12 +1009,12 @@ public final class TextAnalyticsAsyncClient {
      * English as default.
      *
      * @return A {@link Mono} containing a {@link Response} whose {@link Response#getValue() value} has the {@link
-     * TextSentimentResult text sentiment} of the text.
+     * AnalyzeSentimentResult text sentiment} of the text.
      *
      * @throws NullPointerException if {@code text} is {@code null}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<TextSentimentResult>> analyzeSentimentWithResponse(String text, String language) {
+    public Mono<Response<AnalyzeSentimentResult>> analyzeSentimentWithResponse(String text, String language) {
         try {
             return withContext(context -> analyzeSentimentWithResponse(text, language, context));
         } catch (RuntimeException ex) {
@@ -1022,11 +1022,11 @@ public final class TextAnalyticsAsyncClient {
         }
     }
 
-    Mono<Response<TextSentimentResult>> analyzeSentimentWithResponse(String text, String language, Context context) {
+    Mono<Response<AnalyzeSentimentResult>> analyzeSentimentWithResponse(String text, String language, Context context) {
         return analyzeBatchSentimentWithResponse(
             Arrays.asList(new TextDocumentInput(Integer.toString(0), text, language)), null, context)
             .flatMap(response -> {
-                Iterator<TextSentimentResult> responseItem = response.getValue().iterator();
+                Iterator<AnalyzeSentimentResult> responseItem = response.getValue().iterator();
                 return Mono.just(new SimpleResponse<>(response, responseItem.next()));
             });
     }
@@ -1037,13 +1037,13 @@ public final class TextAnalyticsAsyncClient {
      *
      * @param textInputs A list of text to be analyzed.
      *
-     * @return A {@link Mono} containing the {@link DocumentResultCollection batch} of the {@link TextSentimentResult
+     * @return A {@link Mono} containing the {@link DocumentResultCollection batch} of the {@link AnalyzeSentimentResult
      * text sentiment} of the text.
      *
      * @throws NullPointerException if {@code textInputs} is {@code null}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<DocumentResultCollection<TextSentimentResult>> analyzeSentiment(List<String> textInputs) {
+    public Mono<DocumentResultCollection<AnalyzeSentimentResult>> analyzeSentiment(List<String> textInputs) {
         try {
             return analyzeSentimentWithResponse(textInputs, null).flatMap(FluxUtil::toMono);
         } catch (RuntimeException ex) {
@@ -1060,12 +1060,12 @@ public final class TextAnalyticsAsyncClient {
      * English as default.
      *
      * @return A {@link Response} of {@link Mono} containing the {@link DocumentResultCollection batch} of the {@link
-     * TextSentimentResult text sentiment}.
+     * AnalyzeSentimentResult text sentiment}.
      *
      * @throws NullPointerException if {@code textInputs} is {@code null}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<DocumentResultCollection<TextSentimentResult>>> analyzeSentimentWithResponse(
+    public Mono<Response<DocumentResultCollection<AnalyzeSentimentResult>>> analyzeSentimentWithResponse(
         List<String> textInputs, String language) {
         try {
             return withContext(context -> analyzeSentimentWithResponse(textInputs, language, context));
@@ -1074,7 +1074,7 @@ public final class TextAnalyticsAsyncClient {
         }
     }
 
-    Mono<Response<DocumentResultCollection<TextSentimentResult>>> analyzeSentimentWithResponse(
+    Mono<Response<DocumentResultCollection<AnalyzeSentimentResult>>> analyzeSentimentWithResponse(
         List<String> textInputs, String language, Context context) {
         List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
@@ -1087,13 +1087,13 @@ public final class TextAnalyticsAsyncClient {
      *
      * @param textInputs A list of {@link TextDocumentInput inputs/documents} to be analyzed.
      *
-     * @return A {@link Mono} containing the {@link DocumentResultCollection batch} of the {@link TextSentimentResult
+     * @return A {@link Mono} containing the {@link DocumentResultCollection batch} of the {@link AnalyzeSentimentResult
      * text sentiment}.
      *
      * @throws NullPointerException if {@code textInputs} is {@code null}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<DocumentResultCollection<TextSentimentResult>> analyzeBatchSentiment(
+    public Mono<DocumentResultCollection<AnalyzeSentimentResult>> analyzeBatchSentiment(
         List<TextDocumentInput> textInputs) {
         try {
             return analyzeBatchSentimentWithResponse(textInputs, null).flatMap(FluxUtil::toMono);
@@ -1111,12 +1111,12 @@ public final class TextAnalyticsAsyncClient {
      * and show statistics.
      *
      * @return A {@link Mono} containing a {@link Response} whose {@link Response#getValue() value} contains the {@link
-     * DocumentResultCollection batch} of {@link TextSentimentResult text sentiment}.
+     * DocumentResultCollection batch} of {@link AnalyzeSentimentResult text sentiment}.
      *
      * @throws NullPointerException if {@code textInputs} is {@code null}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<Response<DocumentResultCollection<TextSentimentResult>>> analyzeBatchSentimentWithResponse(
+    public Mono<Response<DocumentResultCollection<AnalyzeSentimentResult>>> analyzeBatchSentimentWithResponse(
         List<TextDocumentInput> textInputs, TextAnalyticsRequestOptions options) {
         try {
             return withContext(context -> analyzeBatchSentimentWithResponse(textInputs, options, context));
@@ -1125,7 +1125,7 @@ public final class TextAnalyticsAsyncClient {
         }
     }
 
-    Mono<Response<DocumentResultCollection<TextSentimentResult>>> analyzeBatchSentimentWithResponse(
+    Mono<Response<DocumentResultCollection<AnalyzeSentimentResult>>> analyzeBatchSentimentWithResponse(
         List<TextDocumentInput> documents, TextAnalyticsRequestOptions options, Context context) {
         final MultiLanguageBatchInput batchInput = new MultiLanguageBatchInput()
             .setDocuments(convertToMultiLanguageInput(documents));
@@ -1157,23 +1157,23 @@ public final class TextAnalyticsAsyncClient {
         return multiLanguageInputs;
     }
 
-    private DocumentResultCollection<TextSentimentResult> toDocumentResultCollection(
+    private DocumentResultCollection<AnalyzeSentimentResult> toDocumentResultCollection(
         final SentimentResponse sentimentResponse) {
         return new DocumentResultCollection<>(getDocumentTextSentiment(sentimentResponse),
             sentimentResponse.getModelVersion(), sentimentResponse.getStatistics() == null ? null
             : mapBatchStatistics(sentimentResponse.getStatistics()));
     }
 
-    private List<TextSentimentResult> getDocumentTextSentiment(final SentimentResponse sentimentResponse) {
-        Stream<TextSentimentResult> validDocumentList = sentimentResponse.getDocuments().stream()
+    private List<AnalyzeSentimentResult> getDocumentTextSentiment(final SentimentResponse sentimentResponse) {
+        Stream<AnalyzeSentimentResult> validDocumentList = sentimentResponse.getDocuments().stream()
             .map(this::convertToTextSentimentResult);
-        Stream<TextSentimentResult> errorDocumentList = sentimentResponse.getErrors().stream()
+        Stream<AnalyzeSentimentResult> errorDocumentList = sentimentResponse.getErrors().stream()
             .map(this::convertToErrorTextSentimentResult);
 
         return Stream.concat(validDocumentList, errorDocumentList).collect(Collectors.toList());
     }
 
-    private TextSentimentResult convertToTextSentimentResult(final DocumentSentiment documentSentiment) {
+    private AnalyzeSentimentResult convertToTextSentimentResult(final DocumentSentiment documentSentiment) {
         // Document text sentiment
         final TextSentimentClass documentSentimentClass = convertToTextSentimentClass(documentSentiment.getSentiment());
         if (documentSentimentClass == null) {
@@ -1187,7 +1187,7 @@ public final class TextAnalyticsAsyncClient {
         final List<TextSentiment> sentenceSentimentTexts =
             convertToSentenceSentiments(documentSentiment.getSentences());
 
-        return new TextSentimentResult(documentSentiment.getId(),
+        return new AnalyzeSentimentResult(documentSentiment.getId(),
             documentSentiment.getStatistics() == null ? null
                 : convertToTextDocumentStatistics(documentSentiment.getStatistics()), null,
             new TextSentiment(documentSentimentClass, sentimentScores[0], sentimentScores[1], sentimentScores[2],
@@ -1268,9 +1268,9 @@ public final class TextAnalyticsAsyncClient {
         }
     }
 
-    private TextSentimentResult convertToErrorTextSentimentResult(final DocumentError documentError) {
+    private AnalyzeSentimentResult convertToErrorTextSentimentResult(final DocumentError documentError) {
         final com.azure.ai.textanalytics.models.TextAnalyticsError error = convertToError(documentError.getError());
-        return new TextSentimentResult(documentError.getId(), null, error, null,
+        return new AnalyzeSentimentResult(documentError.getId(), null, error, null,
             null);
     }
 
