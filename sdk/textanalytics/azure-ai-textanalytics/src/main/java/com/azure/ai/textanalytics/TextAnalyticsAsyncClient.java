@@ -201,8 +201,8 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<DetectLanguageResult>>> detectLanguagesWithResponse(List<String> textInputs,
         String countryHint, Context context) {
-        List<DetectLanguageInput> detectLanguageInputs = mapByIndex(textInputs, (index, value) ->
-            new DetectLanguageInput(index, value, countryHint));
+        List<DetectLanguageInput> detectLanguageInputs = textInputs == null ? null
+            : mapByIndex(textInputs, (index, value) -> new DetectLanguageInput(index, value, countryHint));
 
         return detectBatchLanguagesWithResponse(detectLanguageInputs, null, context);
     }
@@ -360,7 +360,7 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<RecognizeEntitiesResult>>> recognizeEntitiesWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
+        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         return recognizeBatchEntitiesWithResponse(documentInputs, null, context);
     }
@@ -520,7 +520,7 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<RecognizePiiEntitiesResult>>> recognizePiiEntitiesWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
+        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         try {
             return recognizeBatchPiiEntitiesWithResponse(documentInputs, null, context);
@@ -686,7 +686,7 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<RecognizeLinkedEntitiesResult>>> recognizeLinkedEntitiesWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
+        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         try {
             return recognizeBatchLinkedEntitiesWithResponse(documentInputs, null, context);
@@ -847,7 +847,7 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<ExtractKeyPhraseResult>>> extractKeyPhrasesWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
+        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         try {
             return extractBatchKeyPhrasesWithResponse(documentInputs, null, context);
@@ -1026,7 +1026,7 @@ public final class TextAnalyticsAsyncClient {
 
     Mono<Response<DocumentResultCollection<AnalyzeSentimentResult>>> analyzeSentimentWithResponse(
         List<String> textInputs, String language, Context context) {
-        List<TextDocumentInput> documentInputs = mapByIndex(textInputs, (index, value) ->
+        List<TextDocumentInput> documentInputs = textInputs == null ? null : mapByIndex(textInputs, (index, value) ->
             new TextDocumentInput(index, value, language));
         return analyzeBatchSentimentWithResponse(documentInputs, null, context);
     }

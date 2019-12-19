@@ -14,7 +14,6 @@ import com.azure.ai.textanalytics.models.RecognizeLinkedEntitiesResult;
 import com.azure.ai.textanalytics.models.TextAnalyticsError;
 import com.azure.core.exception.HttpResponseException;
 import com.azure.core.util.Context;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -23,7 +22,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TextAnalyticsClientTest extends TextAnalyticsClientTestBase {
 
@@ -286,7 +284,6 @@ public class TextAnalyticsClientTest extends TextAnalyticsClientTestBase {
         validateErrorDocument(expectedError, client.extractKeyPhrases("").getError());
     }
 
-    @Disabled
     @Test
     public void extractKeyPhrasesForFaultyText() {
         assertEquals(client.extractKeyPhrases("!@#%%").getKeyPhrases().size(), 0);
