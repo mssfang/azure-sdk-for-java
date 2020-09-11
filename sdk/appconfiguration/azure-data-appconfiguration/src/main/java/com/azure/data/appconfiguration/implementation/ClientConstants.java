@@ -3,10 +3,20 @@
 
 package com.azure.data.appconfiguration.implementation;
 
-public class ClientConstants {
+/**
+ * Defines general constants.
+ *
+ * RESERVED FOR INTERNAL USE.
+ */
+public final class ClientConstants {
 
     /**
      * URI format for an App Configuration HTTPS.
      */
     public static final String ENDPOINT_FORMAT = "https://%s.%s";
+
+    /**
+     * App Configuration default scope value.
+     */
+    public static final String APP_CONFIGURATION_SCOPE = "https://*.azconfig.io/.default";
 }

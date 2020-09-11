@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.azure.data.appconfiguration.implementation.ClientConstants.APP_CONFIGURATION_SCOPE;
+
 /**
  * This class provides a fluent builder API to help aid the configuration and instantiation of
  * {@link ConfigurationClient ConfigurationClients} and {@link ConfigurationAsyncClient ConfigurationAsyncClients},
@@ -192,7 +194,7 @@ public final class ConfigurationClientBuilder {
         if (tokenCredential != null) {
             // User token based policy
             policies.add(
-                new BearerTokenAuthenticationPolicy(tokenCredential, String.format("%s/.default", buildEndpoint)));
+                new BearerTokenAuthenticationPolicy(tokenCredential, APP_CONFIGURATION_SCOPE));
         } else if (credential != null) {
             // Use credential based policy
             policies.add(new ConfigurationCredentialsPolicy(credential));
