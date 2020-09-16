@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Immutable
 public final class TrainingDocumentInfo {
+    private String modelId;
 
     /*
      * Training document name.
@@ -86,5 +87,9 @@ public final class TrainingDocumentInfo {
      */
     public List<FormRecognizerError> getErrors() {
         return this.errors;
+    }
+
+    public String getModelId() {
+        return modelId;
     }
 }

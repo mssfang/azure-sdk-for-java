@@ -20,6 +20,7 @@ import com.azure.ai.formrecognizer.models.FormRecognizerErrorInformation;
 import com.azure.ai.formrecognizer.models.FormRecognizerException;
 import com.azure.ai.formrecognizer.models.FormRecognizerOperationResult;
 import com.azure.ai.formrecognizer.training.models.AccountProperties;
+import com.azure.ai.formrecognizer.training.models.CreateCompositeModelOptions;
 import com.azure.ai.formrecognizer.training.models.TrainingOptions;
 import com.azure.ai.formrecognizer.training.models.CopyAuthorization;
 import com.azure.ai.formrecognizer.training.models.CustomFormModel;
@@ -46,6 +47,7 @@ import com.azure.core.util.polling.PollingContext;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
@@ -468,6 +470,16 @@ public final class FormTrainingAsyncClient {
         } catch (RuntimeException ex) {
             return monoError(logger, ex);
         }
+    }
+
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public PollerFlux<FormRecognizerOperationResult, CustomFormModel> beginCreateCompositeModel(List<String> modelIds) {
+        return null;
+    }
+
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public PollerFlux<FormRecognizerOperationResult, CustomFormModel> beginCreateCompositeModel(List<String> modelIds, CreateCompositeModelOptions createCompositeModelOptions) {
+        return null;
     }
 
     Mono<Response<CopyAuthorization>> getCopyAuthorizationWithResponse(String resourceId, String resourceRegion,
