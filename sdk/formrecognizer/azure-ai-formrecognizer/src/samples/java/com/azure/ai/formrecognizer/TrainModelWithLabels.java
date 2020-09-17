@@ -45,7 +45,7 @@ public class TrainModelWithLabels {
 
         // Model Info
         System.out.printf("Model Id: %s%n", customFormModel.getModelId());
-        // System.out.printf("Model display name: %s%n", customFormModel.getDisplayName());
+        System.out.printf("Model display name: %s%n", customFormModel.getDisplayName());
         System.out.printf("Model Status: %s%n", customFormModel.getModelStatus());
         System.out.printf("Training started on: %s%n", customFormModel.getTrainingStartedOn());
         System.out.printf("Training completed on: %s%n%n", customFormModel.getTrainingCompletedOn());
