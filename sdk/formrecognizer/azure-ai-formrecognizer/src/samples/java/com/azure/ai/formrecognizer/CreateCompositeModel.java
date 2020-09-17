@@ -17,9 +17,9 @@ public class CreateCompositeModel {
             .buildClient();
 
         List<String> modelIdList = Arrays.asList("modelId1", "modelId2");
-        final CustomFormModel customFormModel =
-            client.beginCreateCompositeModel(modelIdList).getFinalResult();
-
+        final CustomFormModel customFormModel = client.beginCreateCompositeModel(modelIdList).getFinalResult();
+        
+        System.out.printf("Model Id: %s", customFormModel.getModelId());
         System.out.printf("Display name for model: %s", customFormModel.getDisplayName());
         System.out.printf("Is this a composite model: %s", customFormModel.getModelProperties().isCompositeModel());
         customFormModel.getSubmodels().forEach(customFormSubmodel -> {
