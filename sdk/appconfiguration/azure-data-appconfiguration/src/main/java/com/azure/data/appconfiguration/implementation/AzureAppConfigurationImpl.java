@@ -72,14 +72,20 @@ import com.azure.data.appconfiguration.implementation.models.PutLockHeaders;
 import com.azure.data.appconfiguration.implementation.models.SnapshotListResult;
 import com.azure.data.appconfiguration.implementation.models.SnapshotUpdateParameters;
 import com.azure.data.appconfiguration.implementation.models.UpdateSnapshotHeaders;
+import com.azure.data.appconfiguration.models.ConfigurationSetting;
 import com.azure.data.appconfiguration.models.ConfigurationSnapshot;
 import com.azure.data.appconfiguration.models.ConfigurationSnapshotStatus;
 import com.azure.data.appconfiguration.models.SettingFields;
+import com.azure.data.appconfiguration.models.SettingSelector;
 import com.azure.data.appconfiguration.models.SnapshotFields;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import reactor.core.publisher.Mono;
+
+import static com.azure.data.appconfiguration.implementation.ConfigurationSettingDeserializationHelper.toConfigurationSetting;
 
 /** Initializes a new instance of the AzureAppConfiguration type. */
 public final class AzureAppConfigurationImpl {
@@ -292,6 +298,22 @@ public final class AzureAppConfigurationImpl {
                 @HeaderParam("If-None-Match") String ifNoneMatch,
                 @HeaderParam("Accept") String accept,
                 Context context);
+
+@Get("")
+@ExpectedResponses({200, 304})
+@UnexpectedResponseExceptionType(HttpResponseException.class)
+ResponseBase<GetKeyValuesHeaders, KeyValueListResult> getKeyValuesSinglePageSync(
+        @HostParam("endpoint") String endpoint,
+        @QueryParam("key") String key,
+        @QueryParam("label") String label,
+        @HeaderParam("Sync-Token") String syncToken,
+        @QueryParam("api-version") String apiVersion,
+        @QueryParam("After") String after,
+        @HeaderParam("Accept-Datetime") String acceptDatetime,
+        @QueryParam("$Select") String select,
+        @HeaderParam("If-None-Match") String ifNoneMatch,
+        @HeaderParam("Accept") String accept,
+        Context context);
 
         @Head("/kv")
         @ExpectedResponses({200})
@@ -1488,6 +1510,47 @@ public final class AzureAppConfigurationImpl {
                 res.getHeaders(),
                 res.getValue().getItems(),
                 res.getValue().getNextLink(),
+                res.getDeserializedHeaders());
+    }
+
+    @ServiceMethod(returns = ReturnType.COLLECTION)
+    public Response<List<ConfigurationSetting>> listConfigurationSettingsForSinglePage(String continuesToken,
+        String key, String label, String after, String acceptDatetime, List<SettingFields> select,
+        String ifNoneMatch, Context context) {
+        final String accept = "application/vnd.microsoft.appconfig.kvset+json, application/problem+json";
+        String selectConverted = (select == null)
+                ? null
+                : select.stream().map(value -> Objects.toString(value, "")).collect(Collectors.joining(","));
+        String endpoint = this.getEndpoint();
+        if (endpoint != null && endpoint.endsWith("/")) {
+            endpoint = endpoint.substring(0, endpoint.length() - 1);
+        }
+        ResponseBase<GetKeyValuesHeaders, KeyValueListResult> res =
+                service.getKeyValuesSinglePageSync(
+                        endpoint + continuesToken,
+                        key,
+                        label,
+                        this.getSyncToken(),
+                        this.getApiVersion(),
+                        after,
+                        acceptDatetime,
+                        selectConverted,
+                        ifNoneMatch,
+                        accept,
+                        context);
+
+        KeyValueListResult value = res.getValue();
+        if (value == null) {
+            return new ResponseBase<>(res.getRequest(), res.getStatusCode(), res.getHeaders(), new ArrayList<>(0),
+                res.getDeserializedHeaders());
+        }
+        List<KeyValue> keyValues = value.getItems();
+        List<ConfigurationSetting> result = new ArrayList<>();
+        for (KeyValue kv : keyValues) {
+            result.add(toConfigurationSetting(kv));
+        }
+
+        return new ResponseBase<>(res.getRequest(), res.getStatusCode(), res.getHeaders(), result,
                 res.getDeserializedHeaders());
     }
 

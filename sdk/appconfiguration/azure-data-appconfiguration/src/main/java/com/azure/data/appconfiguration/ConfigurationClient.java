@@ -1051,26 +1051,42 @@ public final class ConfigurationClient {
      */
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<ConfigurationSetting> listConfigurationSettings(SettingSelector selector, Context context) {
+        final String acceptDateTime = selector == null ? null : selector.getAcceptDateTime();
+
         return new PagedIterable<>(
             () -> {
                 final PagedResponse<KeyValue> pagedResponse = serviceClient.getKeyValuesSinglePage(
-                    selector == null ? null : selector.getKeyFilter(),
-                    selector == null ? null : selector.getLabelFilter(),
-                    null,
-                    selector == null ? null : selector.getAcceptDateTime(),
-                    selector == null ? null : toSettingFieldsList(selector.getFields()),
-                    null,
-                    null,
-                    null,
-                    enableSyncRestProxy(addTracingNamespace(context)));
+                        selector == null ? null : selector.getKeyFilter(),
+                        selector == null ? null : selector.getLabelFilter(),
+                        null,
+                        acceptDateTime,
+                        selector == null ? null : toSettingFieldsList(selector.getFields()),
+                        null,
+                        null,
+                        null,
+                        enableSyncRestProxy(addTracingNamespace(context)));
                 return toConfigurationSettingWithPagedResponse(pagedResponse);
             },
             nextLink -> {
                 final PagedResponse<KeyValue> pagedResponse = serviceClient.getKeyValuesNextSinglePage(nextLink,
-                    selector.getAcceptDateTime(), null, null, enableSyncRestProxy(addTracingNamespace(context)));
+                        acceptDateTime, null, null, enableSyncRestProxy(addTracingNamespace(context)));
                 return toConfigurationSettingWithPagedResponse(pagedResponse);
             }
         );
+    }
+
+@ServiceMethod(returns = ReturnType.COLLECTION)
+public Response<List<ConfigurationSetting>> listConfigurationSettingsForSinglePage(String continuesToken,
+    MatchConditions matchConditions, SettingSelector selector, Context context) {
+        final String acceptDateTime = selector == null ? null : selector.getAcceptDateTime();
+        return serviceClient.listConfigurationSettingsForSinglePage(continuesToken,
+                selector == null ? null : selector.getKeyFilter(),
+                selector == null ? null : selector.getLabelFilter(),
+                null,
+                acceptDateTime,
+                selector == null ? null : toSettingFieldsList(selector.getFields()),
+                matchConditions.getIfNoneMatch(),
+                context);
     }
 
     /**
