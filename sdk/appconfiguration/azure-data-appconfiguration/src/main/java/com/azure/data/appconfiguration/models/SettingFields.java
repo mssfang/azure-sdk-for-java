@@ -16,28 +16,44 @@ import java.util.Locale;
  */
 public final class SettingFields extends ExpandableStringEnum<SettingFields> {
 
-    /** Populates the 'key' from the service. */
+    /**
+     * Populates the 'key' from the service.
+     */
     public static final SettingFields KEY = fromString("key");
 
-    /** Populates the 'label' from the service. */
+    /**
+     * Populates the 'label' from the service.
+     */
     public static final SettingFields LABEL = fromString("label");
 
-    /** Populates the 'value' from the service. */
+    /**
+     * Populates the 'value' from the service.
+     */
     public static final SettingFields VALUE = fromString("value");
 
-    /** Populates the 'content_type' from the service. */
+    /**
+     * Populates the 'content_type' from the service.
+     */
     public static final SettingFields CONTENT_TYPE = fromString("content_type");
 
-    /** Populates the 'etag' from the service. */
+    /**
+     * Populates the 'etag' from the service.
+     */
     public static final SettingFields ETAG = fromString("etag");
 
-    /** Populates the 'last_modified' from the service. */
+    /**
+     * Populates the 'last_modified' from the service.
+     */
     public static final SettingFields LAST_MODIFIED = fromString("last_modified");
 
-    /** Populates the 'locked' from the service. */
+    /**
+     * Populates the 'locked' from the service.
+     */
     public static final SettingFields IS_READ_ONLY = fromString("locked");
 
-    /** Populates the 'tags' from the service. */
+    /**
+     * Populates the 'tags' from the service.
+     */
     public static final SettingFields TAGS = fromString("tags");
 
     /**
@@ -46,7 +62,8 @@ public final class SettingFields extends ExpandableStringEnum<SettingFields> {
      * @deprecated Use the {@link #fromString(String)} factory method.
      */
     @Deprecated
-    public SettingFields() {}
+    public SettingFields() {
+    }
 
     /**
      * Creates or finds a {@link SettingFields} from its string representation.
@@ -75,7 +92,7 @@ public final class SettingFields extends ExpandableStringEnum<SettingFields> {
      * @deprecated This method is no longer needed. SettingFields is using lower case enum value for the HTTP requests.
      */
     @Deprecated()
-    public static String toStringMapper(SettingFields field) {
+    static public String toStringMapper(SettingFields field) {
         return field.toString().toLowerCase(Locale.US);
     }
 }
