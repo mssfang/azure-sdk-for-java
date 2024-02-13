@@ -1058,6 +1058,7 @@ public final class ConfigurationClient {
         final String acceptDateTime = selector == null ? null : selector.getAcceptDateTime();
         final List<MatchConditions> matchConditionsList = selector == null ? null : selector.getMatchConditions();
         AtomicInteger pageETagIndex = new AtomicInteger(1);
+        final List<String> tagsFilter = selector == null ? null : List.of(selector.getTagsFilter());
 
         return new PagedIterable<>(
             () -> {
@@ -1075,6 +1076,7 @@ public final class ConfigurationClient {
                             null,
                             null,
                             firstPageETag,
+                            tagsFilter,
                             enableSyncRestProxy(addTracingNamespace(context)));
                 } catch (HttpResponseException ex) {
                     final HttpResponse httpResponse = ex.getResponse();
@@ -1199,6 +1201,7 @@ public final class ConfigurationClient {
                     snapshotName,
                     null,
                     null,
+                    null,
                     enableSyncRestProxy(addTracingNamespace(context)));
                 return toConfigurationSettingWithPagedResponse(pagedResponse);
             },
@@ -1277,6 +1280,7 @@ public final class ConfigurationClient {
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<ConfigurationSetting> listRevisions(SettingSelector selector, Context context) {
         final String acceptDateTime = selector == null ? null : selector.getAcceptDateTime();
+        final List<String> tagsFilter = selector == null ? null : List.of(selector.getTagsFilter());
         return new PagedIterable<>(
             () -> {
                 final PagedResponse<KeyValue> pagedResponse = serviceClient.getRevisionsSinglePage(
@@ -1285,6 +1289,7 @@ public final class ConfigurationClient {
                     null,
                     acceptDateTime,
                     selector == null ? null : toSettingFieldsList(selector.getFields()),
+                    tagsFilter,
                     enableSyncRestProxy(addTracingNamespace(context)));
                 return toConfigurationSettingWithPagedResponse(pagedResponse);
             },

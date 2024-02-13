@@ -18,6 +18,7 @@ import com.azure.core.http.rest.Response;
 import com.azure.core.http.rest.ResponseBase;
 import com.azure.core.http.rest.SimpleResponse;
 import com.azure.core.util.Context;
+import com.azure.core.util.IterableStream;
 import com.azure.core.util.logging.ClientLogger;
 import com.azure.core.util.polling.PollOperationDetails;
 import com.azure.core.util.polling.PollerFlux;
@@ -38,10 +39,13 @@ import com.azure.data.appconfiguration.models.SnapshotSelector;
 import reactor.core.publisher.Mono;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.azure.core.util.FluxUtil.monoError;
 import static com.azure.core.util.FluxUtil.withContext;
@@ -50,6 +54,7 @@ import static com.azure.data.appconfiguration.implementation.ConfigurationSettin
 import static com.azure.data.appconfiguration.implementation.Utility.ETAG_ANY;
 import static com.azure.data.appconfiguration.implementation.Utility.addTracingNamespace;
 import static com.azure.data.appconfiguration.implementation.Utility.getETag;
+import static com.azure.data.appconfiguration.implementation.Utility.iterableToList;
 import static com.azure.data.appconfiguration.implementation.Utility.parseNextLink;
 import static com.azure.data.appconfiguration.implementation.Utility.toKeyValue;
 import static com.azure.data.appconfiguration.implementation.Utility.toSettingFieldsList;
@@ -1041,6 +1046,7 @@ public final class ConfigurationAsyncClient {
         final String acceptDateTime = selector == null ? null : selector.getAcceptDateTime();
         final List<SettingFields> settingFields = selector == null ? null : toSettingFieldsList(selector.getFields());
         final List<MatchConditions> matchConditionsList = selector == null ? null : selector.getMatchConditions();
+        final List<String> tagsFilter = selector == null ? null : List.of(selector.getTagsFilter());
         AtomicInteger pageETagIndex = new AtomicInteger(1);
         return new PagedFlux<>(
                 () -> withContext(context -> {
@@ -1056,6 +1062,7 @@ public final class ConfigurationAsyncClient {
                             null,
                             null,
                             firstPageETag,
+                            tagsFilter,
                             addTracingNamespace(context))
                             .onErrorResume(
                                 HttpResponseException.class,
@@ -1184,6 +1191,7 @@ public final class ConfigurationAsyncClient {
                         snapshotName,
                         null,
                         null,
+                        null,
                         addTracingNamespace(context))
                     .map(pagedResponse -> toConfigurationSettingWithPagedResponse(pagedResponse))),
             nextLink -> withContext(
@@ -1229,6 +1237,7 @@ public final class ConfigurationAsyncClient {
         final String labelFilter = selector == null ? null : selector.getLabelFilter();
         final String acceptDateTime = selector == null ? null : selector.getAcceptDateTime();
         final List<SettingFields> settingFields = selector == null ? null : toSettingFieldsList(selector.getFields());
+        final List<String> tagsFilter = selector == null ? null : List.of(selector.getTagsFilter());
         return new PagedFlux<>(
             () -> withContext(
                 context -> serviceClient.getRevisionsSinglePageAsync(
@@ -1237,6 +1246,7 @@ public final class ConfigurationAsyncClient {
                     null,
                     acceptDateTime,
                     settingFields,
+                    tagsFilter,
                     addTracingNamespace(context))
                                .map(pagedResponse -> toConfigurationSettingWithPagedResponse(pagedResponse))),
             nextLink -> withContext(
