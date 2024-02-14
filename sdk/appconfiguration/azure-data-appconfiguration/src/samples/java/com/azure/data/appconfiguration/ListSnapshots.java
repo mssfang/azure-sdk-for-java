@@ -14,7 +14,10 @@ import com.azure.data.appconfiguration.models.SnapshotSelector;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Sample demonstrates how to list snapshots.
@@ -37,26 +40,30 @@ public class ListSnapshots {
 
         System.out.println("Beginning of synchronous sample...");
 
-        // 1. Prepare first setting.
-        ConfigurationSetting setting = client.setConfigurationSetting("TestKey1", null, "value1");
-        System.out.printf("[SetConfigurationSetting] Key: %s, Value: %s.%n", setting.getKey(), setting.getValue());
-        // 1. Prepare second setting.
-        ConfigurationSetting setting2 = client.setConfigurationSetting("TestKey2", null, "value2");
-        System.out.printf("[SetConfigurationSetting] Key: %s, Value: %s.%n", setting2.getKey(), setting2.getValue());
-        // 1. Prepare the snapshot filters
-        List<ConfigurationSettingsFilter> filters = new ArrayList<>();
-        // Key Name also supports RegExp but only support prefix end with "*", such as "k*" and is case-sensitive.
-        filters.add(new ConfigurationSettingsFilter("Test*"));
+// 1. Prepare first setting.
+Map<String, String> tags = new HashMap<>();
+tags.put("release", "{link/id}");
+ConfigurationSetting setting = client.setConfigurationSetting(
+        new ConfigurationSetting().setKey("TestKey1").setValue("value1").setTags(tags));
+System.out.printf("[SetConfigurationSetting] Key: %s, Value: %s.%n", setting.getKey(), setting.getValue());
+// 1. Prepare second setting.
+ConfigurationSetting setting2 = client.setConfigurationSetting("TestKey2", null, "value2");
+System.out.printf("[SetConfigurationSetting] Key: %s, Value: %s.%n", setting2.getKey(), setting2.getValue());
+// 1. Prepare the snapshot filters
+List<ConfigurationSettingsFilter> filters = new ArrayList<>();
+// Key Name also supports RegExp but only support prefix end with "*", such as "k*" and is case-sensitive.
+// And also filter supports tags, such as "release={link/id}".
+filters.add(new ConfigurationSettingsFilter("Test*").setTags(Arrays.asList("release={link/id}")));
 
-        // 1. Create first snapshot
-        String snapshotNameTest = "{snapshotNameInTest}";
-        SyncPoller<PollOperationDetails, ConfigurationSnapshot> poller =
-            client.beginCreateSnapshot(snapshotNameTest, new ConfigurationSnapshot(filters), null);
-        poller.setPollInterval(Duration.ofSeconds(10));
-        poller.waitForCompletion();
-        ConfigurationSnapshot snapshot = poller.getFinalResult();
-        System.out.printf("Snapshot name=%s is created at %s, snapshot status is %s.%n",
-            snapshot.getName(), snapshot.getCreatedAt(), snapshot.getStatus());
+// 1. Create first snapshot
+String snapshotNameTest = "{snapshotNameInTest}";
+SyncPoller<PollOperationDetails, ConfigurationSnapshot> poller =
+    client.beginCreateSnapshot(snapshotNameTest, new ConfigurationSnapshot(filters), null);
+poller.setPollInterval(Duration.ofSeconds(10));
+poller.waitForCompletion();
+ConfigurationSnapshot snapshot = poller.getFinalResult();
+System.out.printf("Snapshot name=%s is created at %s, snapshot status is %s.%n",
+    snapshot.getName(), snapshot.getCreatedAt(), snapshot.getStatus());
 
         // 2. Prepare third setting.
         ConfigurationSetting setting3 = client.setConfigurationSetting("ProductKey1", null, "value1");

@@ -37,7 +37,7 @@ public class SettingSelector {
     private String keyFilter;
     private String labelFilter;
 
-    private String[] tagsFilter;
+    private List<String> tagsFilter;
     private SettingFields[] fields;
     private String acceptDatetime;
 
@@ -113,7 +113,7 @@ public class SettingSelector {
      *
      * @return tagsFilter The tags used to filter GET requests from the service.
      */
-    public String[] getTagsFilter() {
+    public List<String> getTagsFilter() {
         return tagsFilter;
     }
 
@@ -127,7 +127,7 @@ public class SettingSelector {
      *
      * @return SettingSelector The updated SettingSelector object.
      */
-    public SettingSelector setTagsFilter(String... tagsFilter) {
+    public SettingSelector setTagsFilter(List<String> tagsFilter) {
         this.tagsFilter = tagsFilter;
         return this;
     }

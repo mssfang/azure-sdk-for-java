@@ -30,14 +30,17 @@ public class ListSettingsByTagFilter {
         tags.put("release", "{link/id}");
         ConfigurationSetting setting1 = client.setConfigurationSetting(new ConfigurationSetting().setKey("keyForTag1")
                 .setValue("value1").setTags(tags));
+        ConfigurationSetting setting2 = client.setConfigurationSetting(new ConfigurationSetting().setKey("keyForTag2")
+                .setValue("value1"));
 
         // List settings by tag filter
-        PagedIterable<ConfigurationSetting> configurationSettings = client.listConfigurationSettings(new SettingSelector().setTagsFilter("release"));
-
-
+        PagedIterable<ConfigurationSetting> configurationSettings = client.listConfigurationSettings(
+                new SettingSelector().setTagsFilter(Arrays.asList("release={link/id}")));
 
         configurationSettings.forEach(setting -> {
             System.out.printf("Key: %s, Value: %s", setting.getKey(), setting.getValue());
         });
+
+
     }
 }

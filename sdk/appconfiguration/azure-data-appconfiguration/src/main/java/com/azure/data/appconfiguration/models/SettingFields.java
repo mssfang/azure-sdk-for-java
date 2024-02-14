@@ -92,7 +92,7 @@ public final class SettingFields extends ExpandableStringEnum<SettingFields> {
      * @deprecated This method is no longer needed. SettingFields is using lower case enum value for the HTTP requests.
      */
     @Deprecated()
-    static public String toStringMapper(SettingFields field) {
+    public static String toStringMapper(SettingFields field) {
         return field.toString().toLowerCase(Locale.US);
     }
 }

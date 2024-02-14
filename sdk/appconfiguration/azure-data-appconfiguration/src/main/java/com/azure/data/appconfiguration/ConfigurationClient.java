@@ -1058,7 +1058,7 @@ public final class ConfigurationClient {
         final String acceptDateTime = selector == null ? null : selector.getAcceptDateTime();
         final List<MatchConditions> matchConditionsList = selector == null ? null : selector.getMatchConditions();
         AtomicInteger pageETagIndex = new AtomicInteger(1);
-        final List<String> tagsFilter = selector == null ? null : List.of(selector.getTagsFilter());
+        final List<String> tagsFilter = selector == null ? null : selector.getTagsFilter();
 
         return new PagedIterable<>(
             () -> {
@@ -1280,7 +1280,7 @@ public final class ConfigurationClient {
     @ServiceMethod(returns = ReturnType.COLLECTION)
     public PagedIterable<ConfigurationSetting> listRevisions(SettingSelector selector, Context context) {
         final String acceptDateTime = selector == null ? null : selector.getAcceptDateTime();
-        final List<String> tagsFilter = selector == null ? null : List.of(selector.getTagsFilter());
+        final List<String> tagsFilter = selector == null ? null : selector.getTagsFilter();
         return new PagedIterable<>(
             () -> {
                 final PagedResponse<KeyValue> pagedResponse = serviceClient.getRevisionsSinglePage(
