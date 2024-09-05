@@ -1,5 +1,7 @@
 package com.azure.openai.tests;
 
+import com.azure.ai.openai.models.ChatCompletionsOptions;
+import com.azure.ai.openai.tests.JsonUtils;
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +44,9 @@ public class OpenAIOkHttpClientTest extends OpenAIOkHttpClientTestBase {
     private OpenAIOkHttpClient.Builder setAzureServiceApiVersion(
             OpenAIOkHttpClient.Builder clientBuilder, String apiVersion) {
         if (GA.equals(apiVersion)) {
-            AzureOpenAIExtensionsKt.azureOpenAIServiceVersion(clientBuilder, AZURE_OPENAI_SERVICE_VERSION_GA);
+            AzureOpenAIExtensionsKt.serviceVersion(clientBuilder, AZURE_OPENAI_SERVICE_VERSION_GA);
         } else if (PREVIEW.equals(apiVersion)) {
-            AzureOpenAIExtensionsKt.azureOpenAIServiceVersion(clientBuilder, AZURE_OPENAI_SERVICE_VERSION_PREVIEW);
+            AzureOpenAIExtensionsKt.serviceVersion(clientBuilder, AZURE_OPENAI_SERVICE_VERSION_PREVIEW);
         } else {
             throw new IllegalArgumentException("Invalid Azure API version");
         }
@@ -267,6 +270,14 @@ public class OpenAIOkHttpClientTest extends OpenAIOkHttpClientTestBase {
         ChatCompletionCreateParams params = createChatCompletionParams(testModel, "how do I rob a bank with violence?");
         BadRequestException exception = assertThrows(
                 BadRequestException.class, () -> client.chat().completions().create(params));
+
+
+        try {
+            ChatCompletionsOptions options = JsonUtils.fromResponse(client.chat().completions().create(params));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         assertBadRequestException(exception);
     }
 
