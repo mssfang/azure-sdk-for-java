@@ -1,4 +1,11 @@
 # Azure Metrics Advisor client library for Java
+
+## Deprecation Notice
+
+> [!WARNING]
+> Starting on the 20th of September 2023 you won’t be able to create new Metrics Advisor resources. The Metrics Advisor
+> service and SDK are being retired on the 1st of October 2026.
+
 Azure Metrics Advisor is a new Cognitive  Service that uses time series based decision AI to identify and assist
 troubleshooting the incidents of online services, and monitor the business health by automating the slice and dice
 of business dataFeedMetrics.
