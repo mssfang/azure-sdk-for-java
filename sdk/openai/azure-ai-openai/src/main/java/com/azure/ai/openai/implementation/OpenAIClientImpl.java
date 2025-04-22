@@ -1123,7 +1123,7 @@ public final class OpenAIClientImpl {
      *             finish_reason: String(stop/length/content_filter/function_call/tool_calls) (Required)
      *         }
      *     ]
-     *     usage (Required): {
+     *     usage (Optional): {
      *         completion_tokens: int (Required)
      *         prompt_tokens: int (Required)
      *         total_tokens: int (Required)
@@ -1299,7 +1299,7 @@ public final class OpenAIClientImpl {
      *             finish_reason: String(stop/length/content_filter/function_call/tool_calls) (Required)
      *         }
      *     ]
-     *     usage (Required): {
+     *     usage (Optional): {
      *         completion_tokens: int (Required)
      *         prompt_tokens: int (Required)
      *         total_tokens: int (Required)
@@ -1581,7 +1581,7 @@ public final class OpenAIClientImpl {
      *         }
      *     ]
      *     system_fingerprint: String (Optional)
-     *     usage (Required): {
+     *     usage (Optional): {
      *         completion_tokens: int (Required)
      *         prompt_tokens: int (Required)
      *         total_tokens: int (Required)
@@ -1863,7 +1863,7 @@ public final class OpenAIClientImpl {
      *         }
      *     ]
      *     system_fingerprint: String (Optional)
-     *     usage (Required): {
+     *     usage (Optional): {
      *         completion_tokens: int (Required)
      *         prompt_tokens: int (Required)
      *         total_tokens: int (Required)
@@ -2401,7 +2401,7 @@ public final class OpenAIClientImpl {
      * }
      * </pre>
      * 
-     * @param uploadFileRequest The uploadFileRequest parameter.
+     * @param uploadFileRequest The file and its purpose to upload.
      * @param requestOptions The options to configure the HTTP request before HTTP client sends it.
      * @throws HttpResponseException thrown if the request is rejected by server.
      * @throws ClientAuthenticationException thrown if the request is rejected by server on status code 401.
@@ -2438,7 +2438,7 @@ public final class OpenAIClientImpl {
      * }
      * </pre>
      * 
-     * @param uploadFileRequest The uploadFileRequest parameter.
+     * @param uploadFileRequest The file and its purpose to upload.
      * @param requestOptions The options to configure the HTTP request before HTTP client sends it.
      * @throws HttpResponseException thrown if the request is rejected by server.
      * @throws ClientAuthenticationException thrown if the request is rejected by server on status code 401.
@@ -2586,7 +2586,7 @@ public final class OpenAIClientImpl {
      * 
      * <pre>
      * {@code
-     * byte[]
+     * BinaryData
      * }
      * </pre>
      * 
@@ -2596,11 +2596,11 @@ public final class OpenAIClientImpl {
      * @throws ClientAuthenticationException thrown if the request is rejected by server on status code 401.
      * @throws ResourceNotFoundException thrown if the request is rejected by server on status code 404.
      * @throws ResourceModifiedException thrown if the request is rejected by server on status code 409.
-     * @return represent a byte array along with {@link Response} on successful completion of {@link Mono}.
+     * @return the response body along with {@link Response} on successful completion of {@link Mono}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<BinaryData>> getFileContentWithResponseAsync(String fileId, RequestOptions requestOptions) {
-        final String accept = "application/json";
+        final String accept = "application/octet-stream";
         return FluxUtil.withContext(
             context -> service.getFileContent(this.getEndpoint(), fileId, accept, requestOptions, context));
     }
@@ -2611,7 +2611,7 @@ public final class OpenAIClientImpl {
      * 
      * <pre>
      * {@code
-     * byte[]
+     * BinaryData
      * }
      * </pre>
      * 
@@ -2621,11 +2621,11 @@ public final class OpenAIClientImpl {
      * @throws ClientAuthenticationException thrown if the request is rejected by server on status code 401.
      * @throws ResourceNotFoundException thrown if the request is rejected by server on status code 404.
      * @throws ResourceModifiedException thrown if the request is rejected by server on status code 409.
-     * @return represent a byte array along with {@link Response}.
+     * @return the response body along with {@link Response}.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Response<BinaryData> getFileContentWithResponse(String fileId, RequestOptions requestOptions) {
-        final String accept = "application/json";
+        final String accept = "application/octet-stream";
         return service.getFileContentSync(this.getEndpoint(), fileId, accept, requestOptions, Context.NONE);
     }
 

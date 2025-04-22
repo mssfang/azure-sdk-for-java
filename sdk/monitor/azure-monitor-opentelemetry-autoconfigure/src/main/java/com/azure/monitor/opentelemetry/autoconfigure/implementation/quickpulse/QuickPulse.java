@@ -58,6 +58,10 @@ public class QuickPulse {
     }
 
     public boolean isEnabled() {
+        if (collector == null) {
+            // Because QuickPulse is initialized with a 5 s delay
+            return false;
+        }
         return collector.isEnabled();
     }
 
@@ -120,5 +124,6 @@ public class QuickPulse {
         collector.enable(instrumentationKey);
 
         this.collector = collector;
+
     }
 }
